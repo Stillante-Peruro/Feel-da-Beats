@@ -34,13 +34,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Feel da Beats'),
+        title: const Text('Feel da Beats'),
       ),
       body: _getTabContent(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
@@ -80,11 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
           height: 60,
           width: 60,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.blue,
           ),
-          child: Center(
+          child: const Center(
             child: Icon(
               Icons.search,
               color: Colors.white,
