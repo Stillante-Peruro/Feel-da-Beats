@@ -60,23 +60,32 @@ class _MyHomePageState extends State<MyHomePage> {
             left: 0,
             right: 0,
             child: Container(
-              height: _isSearchActive ? 50 : 25,
-              width: _isSearchActive ? 50 : 25,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.cyan,
-              ),
-              child: IconButton(
-                icon: Icon(Icons.emoji_emotions, color: Colors.white),
-                iconSize: _isSearchActive ? 30 : 15,
-                onPressed: () {
-                  // Handle action for search icon
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EmojiPage()),
-                  );
-                },
-              ),
+              height: 60,
+              width: MediaQuery.of(context).size.width, // Full width container
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: _isSearchActive ? 50 : 25,
+                      width: _isSearchActive ? 50 : 25,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.cyan,
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.emoji_emotions, color: Colors.white),
+                        iconSize: _isSearchActive ? 30 : 15,
+                        onPressed: () {
+                          // Handle action for search icon
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EmojiPage()),
+                          );
+                        },
+                      ),
+                    ),
+                  ]),
             ),
           ),
           AnimatedPositioned(
@@ -89,52 +98,70 @@ class _MyHomePageState extends State<MyHomePage> {
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeInOut,
               child: Container(
-                height: _isSearchActive ? 50 : 25,
-                width: _isSearchActive ? 50 : 25,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.cyan,
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
-                  iconSize: _isSearchActive ? 30 : 15,
-                  onPressed: () {
-                    // Handle action for search icon
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SearchPage()),
-                    );
-                  },
-                ),
+                height: 50,
+                width:
+                    MediaQuery.of(context).size.width, // Full width container
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: _isSearchActive ? 50 : 25,
+                        width: _isSearchActive ? 50 : 25,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.cyan,
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.search, color: Colors.white),
+                          iconSize: _isSearchActive ? 30 : 15,
+                          onPressed: () {
+                            // Handle action for search icon
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SearchPage()),
+                            );
+                          },
+                        ),
+                      ),
+                    ]),
               ),
             ),
           ),
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            bottom: _isSearchActive ? 60 : 45,
-            left: _isSearchActive ? 140 : 30,
-            right: 0,
-            child: Container(
-              height: _isSearchActive ? 50 : 25,
-              width: _isSearchActive ? 50 : 25,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.cyan,
-              ),
-              child: IconButton(
-                icon: Icon(Icons.music_note, color: Colors.white),
-                iconSize: _isSearchActive ? 30 : 15,
-                onPressed: () {
-                  // Handle action for search icon
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MusicPage()),
-                  );
-                },
-              ),
-            ),
-          ),
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              bottom: _isSearchActive ? 60 : 45,
+              left: _isSearchActive ? 140 : 30,
+              right: 0,
+              child: Container(
+                  height: 50,
+                  width:
+                      MediaQuery.of(context).size.width, // Full width container
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          height: _isSearchActive ? 50 : 25,
+                          width: _isSearchActive ? 50 : 25,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.cyan,
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.music_note, color: Colors.white),
+                            iconSize: _isSearchActive ? 30 : 15,
+                            onPressed: () {
+                              // Handle action for search icon
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MusicPage()),
+                              );
+                            },
+                          ),
+                        ),
+                      ]))),
           Positioned(
             bottom: _quickBallPositionY,
             left: 0,
