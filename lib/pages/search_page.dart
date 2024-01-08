@@ -1,3 +1,6 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:feel_da_beats_app/models/music_model.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -6,6 +9,18 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  // final databaseReference = FirebaseDatabase.instance.ref();
+  // final AudioPlayer audioPlayer = AudioPlayer();
+  // List<Song> songs = [];
+
+  // void updateList(){
+
+  // }
+
+  // static List<Song> songs = [];
+
+  // List<Song> display_song = List.from(songs);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         backgroundColor: Colors.cyan[300],
       ),
-      body: const Padding(
+      body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +53,41 @@ class _SearchPageState extends State<SearchPage> {
               ),
               hintText: 'Enter song name',
               prefixIcon: Icon(Icons.search),
-            ))
+            )),
+            SizedBox(height: 20),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: display_song.length,
+            //     itemBuilder: (context, index) => ListTile(
+            //       title: Text(
+            //         display_song[index].title,
+            //         style: TextStyle(fontWeight: FontWeight.bold)
+            //         ),
+            //       subtitle: Text(
+            //         display_song[index].artist,
+            //       ),
+            //     ),
+            //     )
+            // ),
+            //   Expanded(
+            //   child: ListView.builder(
+            //     itemCount: songs.length,
+            //     itemBuilder: (context, index) {
+            //       return ListTile(
+            //         leading: Image.network(
+            //           songs[index].albumImageUrl,
+            //           width: 50,
+            //           height: 50,
+            //         ),
+            //         title: Text(songs[index].title),
+            //         subtitle: Text(songs[index].artist),
+            //         onTap: () {
+            //           playSong(songs[index].audioPath);
+            //         },
+            //       );
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154614009785",
+    "project_id": "feel-da-beats",
+    "storage_bucket": "feel-da-beats.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154614009785:android:dd33258cc983f864a23068",
+        "android_client_info": {
+          "package_name": "com.example.feel_da_beats_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWRMyolLX6oUjGn4DxMqi6L2BBpcr4VZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

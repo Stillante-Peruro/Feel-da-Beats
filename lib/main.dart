@@ -1,7 +1,10 @@
 import 'package:feel_da_beats_app/pages/search_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -84,6 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             MaterialPageRoute(
                                 builder: (context) => EmojiPage()),
                           );
+                          setState(() {
+                            _isSearchActive = !_isSearchActive;
+                          });
                         },
                       ),
                     ),
@@ -123,6 +129,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               MaterialPageRoute(
                                   builder: (context) => SearchPage()),
                             );
+                            setState(() {
+                              _isSearchActive = !_isSearchActive;
+                            });
                           },
                         ),
                       ),
@@ -160,6 +169,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 MaterialPageRoute(
                                     builder: (context) => MusicPage()),
                               );
+                              setState(() {
+                                _isSearchActive = !_isSearchActive;
+                              });
                             },
                           ),
                         ),
