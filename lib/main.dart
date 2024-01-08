@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   bool _isSearchActive = false;
-  double _quickBallPositionY = 30; // Y position of Quick Ball
+  double _quickBallPositionY = 30;
 
   double _iconStartPositionX = 0;
   double _lastDragPositionX = 0;
@@ -248,15 +248,14 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         return ProfileScreen(); // Widget untuk konten halaman Profile
       default:
-        return Container(); // Atau widget default jika indeks tidak ditemukan
+        return HomeScreen();
     }
   }
 
   void _onTabTapped(int index) {
     setState(() {
-      _currentIndex = index; // Update indeks saat tab lainnya dipilih
-      _isSearchActive =
-          false; // Nonaktifkan ikon tambahan saat tab lainnya dipilih
+      _currentIndex = index;
+      _isSearchActive = false;
     });
   }
 }
