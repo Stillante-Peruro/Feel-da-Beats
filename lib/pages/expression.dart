@@ -21,12 +21,26 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
   Future<void> _initializeCamera() async {
     _cameras = await availableCameras();
+    CameraDescription? selectedCamera;
+
+    for (var camera in _cameras) {
+      if (camera.lensDirection == CameraLensDirection.front) {
+        selectedCamera = camera;
+        break;
+      }
+    }
+
+    if (selectedCamera == null) {
+      selectedCamera = _cameras.first;
+    }
+
     _cameraController = CameraController(
-      _cameras.first,
+      selectedCamera,
       ResolutionPreset.medium,
     );
-    await _cameraController!
-        .initialize(); // Gunakan '!' karena pasti sudah diinisialisasi di sini
+
+    await _cameraController!.initialize();
+
     if (mounted) {
       setState(() {});
     }
