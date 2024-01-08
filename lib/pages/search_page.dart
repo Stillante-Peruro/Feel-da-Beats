@@ -1,25 +1,59 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/models/music_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  // final databaseReference = FirebaseDatabase.instance.ref();
-  // final AudioPlayer audioPlayer = AudioPlayer();
-  // List<Song> songs = [];
+  String title = '';
+  List<Map<String, dynamic>> data = [
+    {
+      "songs": {
+        "chill": {
+          {
+            "title": "No Way",
+            "artist": "Bi",
+            "audioPath": "",
+            "albumImgUrl":
+                "https://linkstorage.linkfire.com/medialinks/images/315b01a8-ea83-4493-b43e-e587d688e8c5/artwork-440x440.jpg",
+            "emotionPlaylistType": "angry"
+          },
+          {
+            "title": "Hold You",
+            "artist": "Low Mileage",
+            "audioPath": "",
+            "albumImgUrl":
+                "https://linkstorage.linkfire.com/medialinks/images/9f7a8b8b-2f7e-4cc8-9d52-5c7989866bee/artwork-440x440.jpg",
+            "emotionPlaylistType": "angry"
+          },
+        },
+      }
+    }
+  ];
 
-  // void updateList(){
+  addData() async {
+    for (var element in data) {
+      FirebaseFirestore.instance.collection('songs').add(element);
+    }
+    print('all songs added');
+  }
 
-  // }
-
-  // static List<Song> songs = [];
-
-  // List<Song> display_song = List.from(songs);
+  void initState() async {
+    super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp().whenComplete(() {
+      print("completed");
+    });
+    addData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +79,70 @@ class _SearchPageState extends State<SearchPage> {
             SizedBox(height: 20),
             TextField(
                 decoration: InputDecoration(
-              filled: true,
-              fillColor: Color.fromARGB(255, 235, 235, 235),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                borderSide: BorderSide.none,
-              ),
-              hintText: 'Enter song name',
-              prefixIcon: Icon(Icons.search),
-            )),
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 235, 235, 235),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    borderSide: BorderSide.none,
+                  ),
+                  hintText: 'Enter song name',
+                  prefixIcon: Icon(Icons.search),
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    title = val;
+                  });
+                }),
             SizedBox(height: 20),
+            StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('songs').snapshots(),
+              builder: (context, snapshots) {
+                return (snapshots.connectionState == ConnectionState.waiting)
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        itemCount: snapshots.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var data = snapshots.data!.docs[index].data()
+                              as Map<String, dynamic>;
+
+                          if (title.isEmpty) {
+                            return ListTile(
+                                title: Text(data['title'],
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                subtitle: Text(data['artist'],
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                leading:
+                                    Image.network(data[index].albumImageUrl));
+                          }
+                          if (data['title']
+                              .toSTring()
+                              .startWith(title.toLowerCase())) {
+                            return ListTile(
+                                title: Text(data['title'],
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                subtitle: Text(data['artist'],
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                leading:
+                                    Image.network(data[index].albumImageUrl));
+                          }
+                        });
+              },
+            )
             // Expanded(
             //   child: ListView.builder(
             //     itemCount: display_song.length,
