@@ -1,3 +1,4 @@
+import 'package:feel_da_beats_app/pages/search_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Feel da Beats',
       theme: ThemeData(
         primarySwatch: Colors.cyan,
@@ -277,20 +279,6 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Text('Profile Page'),
-      ),
-    );
-  }
-}
-
-class SearchPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Search Page'),
-      ),
-      body: Center(
-        child: Text('Search Page'),
       ),
     );
   }
