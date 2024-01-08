@@ -84,6 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             MaterialPageRoute(
                                 builder: (context) => EmojiPage()),
                           );
+                          setState(() {
+                            _isSearchActive = !_isSearchActive;
+                          });
                         },
                       ),
                     ),
@@ -123,6 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               MaterialPageRoute(
                                   builder: (context) => SearchPage()),
                             );
+                            setState(() {
+                              _isSearchActive = !_isSearchActive;
+                            });
                           },
                         ),
                       ),
@@ -160,6 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 MaterialPageRoute(
                                     builder: (context) => MusicPage()),
                               );
+                              setState(() {
+                                _isSearchActive = !_isSearchActive;
+                              });
                             },
                           ),
                         ),
