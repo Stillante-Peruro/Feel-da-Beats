@@ -1,3 +1,4 @@
 {
-  "cmake.sourceDirectory": "D:/Dev/Application/Feel da Beats/Feel-da-Beats/windows/flutter"
+  "cmake.sourceDirectory": "D:/Dev/Application/Feel da Beats/Feel-da-Beats/windows/flutter",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
