@@ -39,6 +39,7 @@ dependencies:
   audioplayers: ^5.2.1
   firebase_core: ^2.24.2
   firebase_database: ^10.4.0
+  camera: ^0.10.5+8
 
 dev_dependencies:
   flutter_test:

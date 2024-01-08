@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EmojiPage()),
+                                builder: (context) => ExpressionSearchPage()),
                           );
                           setState(() {
                             _isSearchActive = !_isSearchActive;
@@ -200,7 +200,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         _lastDragPositionX + 50 > _iconStartPositionX) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EmojiPage()),
+                        MaterialPageRoute(
+                            builder: (context) => ExpressionSearchPage()),
                       );
                     } else if (_lastDragPositionX > _iconStartPositionX + 35 &&
                         _lastDragPositionY < _iconStartPositionY &&
