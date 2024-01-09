@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/models/music_model.dart';
+import 'package:feel_da_beats_app/pages/song_page.dart';
 // import 'package:feel_da_beats_app/models/music_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_database/firebase_database.dart';
@@ -128,7 +129,6 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: const Text(
           'Search',
-          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.cyan,
       ),
@@ -192,7 +192,15 @@ class _SearchPageState extends State<SearchPage> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => SongPage()));
+                                          builder: (context) => SongPage(
+                                                title: _resultList[index]
+                                                    ['title'],
+                                                artist: _resultList[index]
+                                                    ['artist'],
+                                                albumImgUrl: _resultList[index]
+                                                    ["albumImgUrl"],
+                                                audioPath: _resultList[index]["audioPath"],
+                                              )));
                                 },
                               );
                             });
@@ -203,17 +211,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class SongPage extends StatelessWidget {
-  const SongPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('songs')),
     );
   }
 }
