@@ -15,7 +15,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   CameraController? _cameraController; // Menggunakan nullable (?)
   late Timer _redirectTimer;
   String emosi = 'Tidak Ada Wajah Terdeteksi';
-
+  bool _isPageSwitched = false;
   late List<CameraDescription> _cameras;
 
   @override
@@ -43,9 +43,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
       }
     }
 
-    if (selectedCamera == null) {
-      selectedCamera = _cameras.first;
-    }
+    selectedCamera ??= _cameras.first;
 
     _cameraController = CameraController(
       selectedCamera,
@@ -88,7 +86,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
             emosi = detectedEmotion;
             _resetTimer(); // Reset timer jika emosi berubah
           });
-        } else if (detectedEmotion == emosi) {
+        } else if (emosi == detectedEmotion) {
           _startTimerToRedirect(); // Mulai timer jika emosi tetap sama
         } else {
           _resetTimer(); // Atur ulang timer jika tidak ada wajah terdeteksi
@@ -107,14 +105,23 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
   void _startTimerToRedirect() {
     _redirectTimer = Timer(Duration(seconds: 5), () {
-      _resetTimer();
-      _cameraController?.stopImageStream();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecommendedSongsPage(emotion: emosi),
-        ),
-      );
+      if (!_isPageSwitched) {
+        // Hentikan stream kamera
+        _cameraController?.stopImageStream();
+
+        // Pastikan halaman belum berpindah untuk menghindari tindakan berulang
+        if (!_isPageSwitched) {
+          _isPageSwitched = true;
+
+          // Pindah ke halaman baru
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecommendedSongsPage(emotion: emosi),
+            ),
+          );
+        }
+      }
     });
   }
 
