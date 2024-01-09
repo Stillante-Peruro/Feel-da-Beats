@@ -24,6 +24,11 @@ if (flutterVersionName == null) {
 }
 
 android {
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
+
     namespace "com.example.feel_da_beats_app"
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
@@ -47,7 +52,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         multiDexEnabled true
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -70,4 +75,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.7.0')
     implementation("com.google.firebase:firebase-firestore")
     implementation 'com.android.support:multidex:1.0.3'
+    implementation('org.tensorflow:tensorflow-lite:2.14.0')
+    implementation('org.tensorflow:tensorflow-lite-gpu:2.14.0')
 }

@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tflite_v2/tflite_v2.dart';
 
 class ExpressionSearchPage extends StatefulWidget {
   const ExpressionSearchPage({Key? key}) : super(key: key);
@@ -11,12 +12,22 @@ class ExpressionSearchPage extends StatefulWidget {
 class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   CameraController? _cameraController; // Menggunakan nullable (?)
 
+  String emosi = '';
+
   late List<CameraDescription> _cameras;
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
+    loadModel();
+  }
+
+  loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/model.tflite',
+      labels: 'assets/labels.txt',
+    );
   }
 
   Future<void> _initializeCamera() async {
@@ -42,7 +53,35 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     await _cameraController!.initialize();
 
     if (mounted) {
-      setState(() {});
+      _cameraController!.startImageStream((CameraImage imageStream) {
+        setState(() {
+          _runModel(imageStream);
+        });
+      });
+    }
+  }
+
+  Future<void> _runModel(CameraImage? cameraImage) async {
+    if (cameraImage != null) {
+      var recognitions = await Tflite.runModelOnFrame(
+        bytesList: cameraImage.planes.map((plane) {
+          return plane.bytes;
+        }).toList(),
+        imageHeight: cameraImage.height,
+        imageWidth: cameraImage.width,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        rotation: 90,
+        numResults: 1,
+        threshold: 0.1,
+        asynch: true,
+      );
+
+      if (recognitions != null && recognitions.isNotEmpty) {
+        setState(() {
+          emosi = recognitions[0]['label'];
+        });
+      }
     }
   }
 
@@ -116,10 +155,10 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
               ),
             ),
           ),
-          const SizedBox(
+          SizedBox(
             height: 80,
             child: Center(
-              child: Text('Output Emosi',
+              child: Text(emosi,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Poppins',
