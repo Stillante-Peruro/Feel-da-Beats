@@ -84,14 +84,14 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
             detectedEmotion != emosi) {
           setState(() {
             emosi = detectedEmotion;
-            _resetTimer(); // Reset timer jika emosi berubah
+            _resetTimer();
           });
         } else if (emosi == detectedEmotion) {
-          _startTimerToRedirect(); // Mulai timer jika emosi tetap sama
+          _startTimerToRedirect();
         } else {
-          _resetTimer(); // Atur ulang timer jika tidak ada wajah terdeteksi
+          _resetTimer();
           setState(() {
-            emosi = 'Tidak Ada Wajah Terdeteksi'; // Atur pesan yang sesuai
+            emosi = 'Tidak Ada Wajah Terdeteksi';
           });
         }
       } else {
@@ -106,14 +106,9 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   void _startTimerToRedirect() {
     _redirectTimer = Timer(Duration(seconds: 5), () {
       if (!_isPageSwitched) {
-        // Hentikan stream kamera
         _cameraController?.stopImageStream();
-
-        // Pastikan halaman belum berpindah untuk menghindari tindakan berulang
         if (!_isPageSwitched) {
           _isPageSwitched = true;
-
-          // Pindah ke halaman baru
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
