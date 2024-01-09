@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_v2/tflite_v2.dart';
+import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 
 class ExpressionSearchPage extends StatefulWidget {
   const ExpressionSearchPage({Key? key}) : super(key: key);
@@ -11,8 +13,8 @@ class ExpressionSearchPage extends StatefulWidget {
 
 class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   CameraController? _cameraController; // Menggunakan nullable (?)
-
-  String emosi = '';
+  late Timer _redirectTimer;
+  String emosi = 'Tidak Ada Wajah Terdeteksi';
 
   late List<CameraDescription> _cameras;
 
@@ -78,11 +80,46 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
       );
 
       if (recognitions != null && recognitions.isNotEmpty) {
+        var detectedEmotion = recognitions[0]['label'];
+
+        if (detectedEmotion != 'Tidak Ada Wajah Terdeteksi' &&
+            detectedEmotion != emosi) {
+          setState(() {
+            emosi = detectedEmotion;
+            _resetTimer(); // Reset timer jika emosi berubah
+          });
+        } else if (detectedEmotion == emosi) {
+          _startTimerToRedirect(); // Mulai timer jika emosi tetap sama
+        } else {
+          _resetTimer(); // Atur ulang timer jika tidak ada wajah terdeteksi
+          setState(() {
+            emosi = 'Tidak Ada Wajah Terdeteksi'; // Atur pesan yang sesuai
+          });
+        }
+      } else {
+        _resetTimer();
         setState(() {
-          emosi = recognitions[0]['label'];
+          emosi = 'Tidak Ada Wajah Terdeteksi'; // Atur pesan yang sesuai
         });
       }
     }
+  }
+
+  void _startTimerToRedirect() {
+    _redirectTimer = Timer(Duration(seconds: 5), () {
+      _resetTimer();
+      _cameraController?.stopImageStream();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RecommendedSongsPage(emotion: emosi),
+        ),
+      );
+    });
+  }
+
+  void _resetTimer() {
+    _redirectTimer.cancel();
   }
 
   @override
