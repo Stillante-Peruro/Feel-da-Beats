@@ -8,6 +8,7 @@ void main() async {
       options: FirebaseOptions(
           apiKey: 'AIzaSyCWRMyolLX6oUjGn4DxMqi6L2BBpcr4VZs',
           appId: '1:154614009785:android:dd33258cc983f864a23068',
+          storageBucket: 'feel-da-beats.appspot.com',
           messagingSenderId: '154614009785',
           projectId: 'feel-da-beats'));
   runApp(const MyApp());
