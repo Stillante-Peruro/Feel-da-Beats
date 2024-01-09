@@ -1,11 +1,8 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:feel_da_beats_app/models/music_model.dart';
 import 'package:feel_da_beats_app/pages/song_page.dart';
 // import 'package:feel_da_beats_app/models/music_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
