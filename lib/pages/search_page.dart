@@ -13,35 +13,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Map<String, dynamic>> data = [
-    // {
-    //   "title": "No Way",
-    //   "artist": "Bi",
-    //   "audioPath": "path/name.mp3",
-    //   "albumImgUrl":
-    //       "https://linkstorage.linkfire.com/medialinks/images/315b01a8-ea83-4493-b43e-e587d688e8c5/artwork-440x440.jpg",
-    //   "emotionPlaylistType": "angry"
-    // },
-    // {
-    //   "title": "Hold You",
-    //   "artist": "Low Mileage",
-    //   "audioPath": "path/name.mp3",
-    //   "albumImgUrl":
-    //       "https://linkstorage.linkfire.com/medialinks/images/9f7a8b8b-2f7e-4cc8-9d52-5c7989866bee/artwork-440x440.jpg",
-    //   "emotionPlaylistType": "angry"
-    // }
-  ];
 
   List _allResults = [];
   List _resultList = [];
   final TextEditingController _searchController = TextEditingController();
-
-  addData() async {
-    for (var element in data) {
-      FirebaseFirestore.instance.collection('songs').add(element);
-    }
-    print('all songs added');
-  }
 
   // Future<void> audioUploadAndSaveURLs(List<String> filePaths) async {
   //   for (String path in filePaths) {
@@ -63,12 +38,6 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     _searchController.addListener(_onSearchChanged);
-    // List<String> audioToUpload = [
-    //   "songs/chill_playlist/BIMINI - No Way (with Avi Snow) [NCS Release].mp3",
-    //   "songs/chill_playlist/Low Mileage - Hold You [NCS Release].mp3",
-    // ];
-    // audioUploadAndSaveURLs(audioToUpload);
-    addData();
     super.initState();
   }
 
