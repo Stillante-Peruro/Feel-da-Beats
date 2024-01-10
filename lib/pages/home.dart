@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/models/music_model.dart';
+import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Center(
         child: Text('Home Page'),
+        // OutlinedButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) =>
+        //               RecommendedSongsPage(emotion: "Neutral"),
+        //         ),
+        //       );
+        //     },
+        //     child: Text('Go to Recommended Songs')),
       ),
     );
   }
