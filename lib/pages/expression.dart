@@ -301,8 +301,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
       setState(() {
         emosi = "Wajah Terdeteksi";
         _startTimerToRedirect();
-        _runModel(
-            cameraImage); //seharusny kalo ini jalan bener. tapi ado exception jadi dk jalan dio
+        // _runModel(cameraImage);  //seharusny kalo ini jalan bener. tapi ado exception jadi dk jalan dio
       });
     } else {
       // _startTimerToCancel();
