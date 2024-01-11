@@ -299,9 +299,10 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
     if (faces.isNotEmpty) {
       setState(() {
-        // emosi = "Wajah Terdeteksi";
+        emosi = "Wajah Terdeteksi";
         _startTimerToRedirect();
-        _runModel(cameraImage);
+        _runModel(
+            cameraImage); //seharusny kalo ini jalan bener. tapi ado exception jadi dk jalan dio
       });
     } else {
       // _startTimerToCancel();
