@@ -66,7 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ExpressionSearchPage()),
+                                builder: (context) => ExpressionSearchPage(
+                                      gagalIdentifikasi: false,
+                                    )),
                           );
                           setState(() {
                             _isSearchActive = !_isSearchActive;
@@ -201,7 +203,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ExpressionSearchPage()),
+                            builder: (context) => ExpressionSearchPage(
+                                  gagalIdentifikasi: false,
+                                )),
                       );
                     } else if (_lastDragPositionX > _iconStartPositionX + 35 &&
                         _lastDragPositionY < _iconStartPositionY &&

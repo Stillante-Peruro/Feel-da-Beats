@@ -1,133 +1,55 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
+import 'package:feel_da_beats_app/utils/camera_view.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:tflite_v2/tflite_v2.dart';
+
+// import 'package:feel_da_beats/utils/face_detector_painter.dart';
+// import 'package:feel_da_beats/utils/detector_view.dart';
 import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 
 class ExpressionSearchPage extends StatefulWidget {
-  const ExpressionSearchPage({Key? key}) : super(key: key);
+  final bool gagalIdentifikasi;
+
+  const ExpressionSearchPage({Key? key, required this.gagalIdentifikasi})
+      : super(key: key);
 
   @override
   State<ExpressionSearchPage> createState() => _ExpressionSearchPageState();
 }
 
 class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
-  CameraController? _cameraController; // Menggunakan nullable (?)
-  late Timer _redirectTimer;
+  final FaceDetector _faceDetector = FaceDetector(
+    options: FaceDetectorOptions(
+      performanceMode: FaceDetectorMode.accurate,
+    ),
+  );
+  bool _canProcess = true;
+  bool _isBusy = false;
+  CustomPaint? _customPaint;
+  // String? _text;
+  var _cameraLensDirection = CameraLensDirection.front;
   String emosi = 'Tidak Ada Wajah Terdeteksi';
+  late Timer _redirectTimer;
   bool _isPageSwitched = false;
-  late List<CameraDescription> _cameras;
+  bool _gagalIdentifikasi = false;
+  bool _timerAlreadyStarted = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
-    loadModel();
-  }
-
-  loadModel() async {
-    await Tflite.loadModel(
-      model: 'assets/model.tflite',
-      labels: 'assets/labels.txt',
-    );
-  }
-
-  Future<void> _initializeCamera() async {
-    _cameras = await availableCameras();
-    CameraDescription? selectedCamera;
-
-    for (var camera in _cameras) {
-      if (camera.lensDirection == CameraLensDirection.front) {
-        selectedCamera = camera;
-        break;
-      }
-    }
-
-    selectedCamera ??= _cameras.first;
-
-    _cameraController = CameraController(
-      selectedCamera,
-      ResolutionPreset.medium,
-    );
-
-    await _cameraController!.initialize();
-
-    if (mounted) {
-      _cameraController!.startImageStream((CameraImage imageStream) {
-        setState(() {
-          _runModel(imageStream);
-        });
-      });
-    }
-  }
-
-  Future<void> _runModel(CameraImage? cameraImage) async {
-    if (cameraImage != null) {
-      var recognitions = await Tflite.runModelOnFrame(
-        bytesList: cameraImage.planes.map((plane) {
-          return plane.bytes;
-        }).toList(),
-        imageHeight: cameraImage.height,
-        imageWidth: cameraImage.width,
-        imageMean: 127.5,
-        imageStd: 127.5,
-        rotation: 90,
-        numResults: 1,
-        threshold: 0.1,
-        asynch: true,
-      );
-
-      if (recognitions != null && recognitions.isNotEmpty) {
-        var detectedEmotion = recognitions[0]['label'];
-
-        if (detectedEmotion != 'Tidak Ada Wajah Terdeteksi' &&
-            detectedEmotion != emosi) {
-          setState(() {
-            emosi = detectedEmotion;
-            _resetTimer();
-          });
-        } else if (emosi == detectedEmotion) {
-          _startTimerToRedirect();
-        } else {
-          _resetTimer();
-          setState(() {
-            emosi = 'Tidak Ada Wajah Terdeteksi';
-          });
-        }
-      } else {
-        _resetTimer();
-        setState(() {
-          emosi = 'Tidak Ada Wajah Terdeteksi'; // Atur pesan yang sesuai
-        });
-      }
-    }
-  }
-
-  void _startTimerToRedirect() {
-    _redirectTimer = Timer(Duration(seconds: 5), () {
-      if (!_isPageSwitched) {
-        _cameraController?.stopImageStream();
-        if (!_isPageSwitched) {
-          _isPageSwitched = true;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RecommendedSongsPage(emotion: emosi),
-            ),
-          );
-        }
-      }
-    });
-  }
-
-  void _resetTimer() {
-    _redirectTimer.cancel();
+    _startTimerToCancel();
+    _loadModel();
   }
 
   @override
   void dispose() {
-    _cameraController
-        ?.dispose(); // Gunakan '?' untuk memastikan bahwa objek terinisialisasi sebelum dipanggil
+    _canProcess = false;
+    _faceDetector.close();
+    Tflite.close();
+    _resetTimer();
+    _redirectTimer.cancel(); // Pastikan timer di-cancel saat halaman di-dispose
     super.dispose();
   }
 
@@ -199,7 +121,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
             child: Center(
               child: Text(emosi,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
@@ -208,20 +130,168 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
           ),
           Center(
             child: Container(
-              width: 370,
-              height: 400,
-              child: ClipRRect(
-                // Use ClipRRect to clip the corners
-                borderRadius: BorderRadius.circular(16),
-                child: _cameraController != null &&
-                        _cameraController!.value.isInitialized
-                    ? CameraPreview(_cameraController!)
-                    : CircularProgressIndicator(),
-              ),
-            ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.grey),
+                width: 370,
+                height: 400,
+                child: widget.gagalIdentifikasi
+                    ? Center(
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.refresh,
+                                size: 100), // Icon reload besar
+                            onPressed: () {
+                              setState(() {
+                                _gagalIdentifikasi = false;
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ExpressionSearchPage(
+                                        gagalIdentifikasi: _gagalIdentifikasi),
+                                  ),
+                                );
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Coba Lagi',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      ))
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: CameraView(
+                          customPaint: _customPaint,
+                          onImage: (inputImage) {
+                            _processImage(inputImage);
+                          },
+                          initialCameraLensDirection: _cameraLensDirection,
+                          onCameraLensDirectionChanged: (value) =>
+                              _cameraLensDirection = value,
+                        ))),
           ),
         ],
       ),
     );
+  }
+
+  _loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/model.tflite',
+      labels: 'assets/labels.txt',
+    );
+  }
+
+  Future<void> _runModel(InputImage inputImage) async {
+    try {
+      var recognitions =
+          await Tflite.runModelOnBinary(binary: inputImage.bytes!);
+
+      if (recognitions != null && recognitions.isNotEmpty) {
+        var detectedEmotion = recognitions[0]['label'];
+
+        if (detectedEmotion != null && detectedEmotion != emosi) {
+          setState(() {
+            emosi = detectedEmotion;
+            _resetTimer();
+          });
+        } else if (emosi == detectedEmotion) {
+          _startTimerToRedirect();
+        } else {
+          _resetTimer();
+          setState(() {
+            emosi = 'Tidak Ada Wajah Terdeteksi';
+          });
+        }
+      } else {
+        _resetTimer();
+        setState(() {
+          emosi = 'Tidak Ada Wajah Terdeteksi';
+        });
+      }
+    } catch (e) {
+      print('Error during model inference: $e');
+    }
+  }
+
+  void _startTimerToRedirect() {
+    String temp = emosi;
+    _redirectTimer = Timer(Duration(seconds: 4), () {
+      if (temp != 'Tidak Ada Wajah Terdeteksi' &&
+          emosi == temp &&
+          !_isPageSwitched) {
+        _isPageSwitched = true;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecommendedSongsPage(emotion: emosi),
+          ),
+        );
+      }
+    });
+  }
+
+  void _startTimerToCancel() {
+    if (!_timerAlreadyStarted) {
+      _redirectTimer = Timer(Duration(seconds: 10), () {
+        _isPageSwitched = true;
+
+        // Ubah nilai _gagalIdentifikasi menjadi true
+        setState(() {
+          _gagalIdentifikasi = true;
+        });
+
+        // Pindah ke halaman baru dengan membawa argument
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ExpressionSearchPage(gagalIdentifikasi: _gagalIdentifikasi),
+          ),
+        ); // Hapus halaman saat ini dari tumpukan halaman
+      });
+
+      _timerAlreadyStarted = true;
+    }
+  }
+
+  void _resetTimer() {
+    _redirectTimer.cancel();
+    _isPageSwitched = false; // Reset _isPageSwitched
+  }
+
+  Future<void> _processImage(InputImage inputImage) async {
+    if (!_canProcess) return;
+    if (_isBusy) return;
+    _isBusy = true;
+    setState(() {
+      // _text = 'Hola';
+    });
+    final faces = await _faceDetector.processImage(inputImage);
+
+    _isBusy = false;
+
+    if (faces.isNotEmpty) {
+      setState(() {
+        emosi = "Wajah Terdeteksi";
+        _startTimerToRedirect();
+        // _startTimerToCancel();
+        // _runModel(inputImage);
+      });
+    } else {
+      // _startTimerToCancel();
+      setState(() {
+        emosi = 'Tidak Ada Wajah Terdeteksi';
+      });
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
