@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 
 class CameraView extends StatefulWidget {
-  CameraView(
+  const CameraView(
       {Key? key,
       required this.customPaint,
       required this.onImage,
@@ -17,7 +17,7 @@ class CameraView extends StatefulWidget {
       : super(key: key);
 
   final CustomPaint? customPaint;
-  final Function(InputImage inputImage) onImage;
+  final Function(InputImage inputImage, CameraImage cameraImage) onImage;
   final VoidCallback? onCameraFeedReady;
   final VoidCallback? onDetectorViewModeChanged;
   final Function(CameraLensDirection direction)? onCameraLensDirectionChanged;
@@ -37,7 +37,7 @@ class _CameraViewState extends State<CameraView> {
   // double _minAvailableExposureOffset = 0.0;
   // double _maxAvailableExposureOffset = 0.0;
   // double _currentExposureOffset = 0.0;
-  bool _changingCameraLens = false;
+  final bool _changingCameraLens = false;
 
   @override
   void initState() {
@@ -77,7 +77,7 @@ class _CameraViewState extends State<CameraView> {
     if (_controller == null) return Container();
     if (_controller?.value.isInitialized == false) return Container();
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    // double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       color: Colors.black,
       child: Stack(
@@ -85,12 +85,11 @@ class _CameraViewState extends State<CameraView> {
         children: <Widget>[
           Center(
             child: _changingCameraLens
-                ? Center(
-                    child: const Text('Changing camera lens'),
+                ? const Center(
+                    child: Text('Changing camera lens'),
                   )
                 : SizedBox(
                     width: screenWidth,
-                    height: screenHeight,
                     child: CameraPreview(
                       _controller!,
                       child: widget.customPaint,
@@ -149,19 +148,10 @@ class _CameraViewState extends State<CameraView> {
     _controller = null;
   }
 
-  Future _switchLiveCamera() async {
-    setState(() => _changingCameraLens = true);
-    _cameraIndex = (_cameraIndex + 1) % _cameras.length;
-
-    await _stopLiveFeed();
-    await _startLiveFeed();
-    setState(() => _changingCameraLens = false);
-  }
-
   void _processCameraImage(CameraImage image) {
     final inputImage = _inputImageFromCameraImage(image);
     if (inputImage == null) return;
-    widget.onImage(inputImage);
+    widget.onImage(inputImage, image);
   }
 
   final _orientations = {

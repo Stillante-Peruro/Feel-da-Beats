@@ -22,7 +22,7 @@ class ExpressionSearchPage extends StatefulWidget {
 class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
-      performanceMode: FaceDetectorMode.accurate,
+      performanceMode: FaceDetectorMode.fast,
     ),
   );
   bool _canProcess = true;
@@ -39,7 +39,9 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   @override
   void initState() {
     super.initState();
-    _startTimerToCancel();
+    if (widget.gagalIdentifikasi == false) {
+      _startTimerToCancel();
+    }
     _loadModel();
   }
 
@@ -167,8 +169,8 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                         borderRadius: BorderRadius.circular(16),
                         child: CameraView(
                           customPaint: _customPaint,
-                          onImage: (inputImage) {
-                            _processImage(inputImage);
+                          onImage: (inputImage, cameraImage) {
+                            _processImage(inputImage, cameraImage);
                           },
                           initialCameraLensDirection: _cameraLensDirection,
                           onCameraLensDirectionChanged: (value) =>
@@ -187,10 +189,28 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     );
   }
 
-  Future<void> _runModel(InputImage inputImage) async {
+  Future<void> _runModel(CameraImage cameraImage) async {
     try {
-      var recognitions =
-          await Tflite.runModelOnBinary(binary: inputImage.bytes!);
+      if (!_canProcess) return;
+      if (_isBusy) return;
+      _isBusy = true;
+      setState(() {
+        // _text = 'Hola';
+      });
+      var recognitions = await Tflite.runModelOnFrame(
+        bytesList: cameraImage.planes.map((plane) {
+          return plane.bytes;
+        }).toList(),
+        imageHeight: cameraImage.height,
+        imageWidth: cameraImage.width,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        rotation: 90,
+        numResults: 1,
+        threshold: 0.1,
+        asynch: true,
+      );
+      _isBusy = false;
 
       if (recognitions != null && recognitions.isNotEmpty) {
         var detectedEmotion = recognitions[0]['label'];
@@ -265,7 +285,8 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     _isPageSwitched = false; // Reset _isPageSwitched
   }
 
-  Future<void> _processImage(InputImage inputImage) async {
+  Future<void> _processImage(
+      InputImage inputImage, CameraImage cameraImage) async {
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
@@ -278,15 +299,14 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
     if (faces.isNotEmpty) {
       setState(() {
-        emosi = "Wajah Terdeteksi";
+        // emosi = "Wajah Terdeteksi";
         _startTimerToRedirect();
-        // _startTimerToCancel();
-        // _runModel(inputImage);
+        _runModel(cameraImage);
       });
     } else {
       // _startTimerToCancel();
       setState(() {
-        emosi = 'Tidak Ada Wajah Terdeteksi';
+        emosi = 'Tidak Ada Wajah Terdeteksi(faces)';
       });
     }
 
