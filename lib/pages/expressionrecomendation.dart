@@ -18,6 +18,15 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
   List _angryPlaylist = [];
   List _sadPlaylist = [];
 
+  @override
+  void initState() {
+    getAllSongs();
+    getAngrySongs();
+    getHappySongs();
+    getSadSongs();
+    super.initState();
+  }
+
   getAllSongs() async {
     var data = await FirebaseFirestore.instance
         .collection('songs')
@@ -80,12 +89,8 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
   }
 
   @override
-  void initState() {
-    getAllSongs();
-    getAngrySongs();
-    getHappySongs();
-    getSadSongs();
-    super.initState();
+  void dispose() {
+    super.dispose();
   }
 
   @override
