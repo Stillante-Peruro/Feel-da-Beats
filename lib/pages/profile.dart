@@ -1,4 +1,5 @@
 import 'package:feel_da_beats_app/pages/landing_page.dart';
+import 'package:feel_da_beats_app/services/userManagement.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,6 +16,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
+            userManagement().signOut();
+            print('user log out succesfully');
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => LoginPage()));
           },

@@ -1,5 +1,6 @@
 import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/register.dart';
+import 'package:feel_da_beats_app/services/userManagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -71,8 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                         showSpinner = false;
                       });
                     });
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()));
+                    userManagement().navigateBasedOnRole(context);
                   } catch (e) {
                     print(e);
                     if (e is FirebaseAuthException) {
