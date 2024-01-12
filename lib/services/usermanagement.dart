@@ -46,7 +46,6 @@ class userManagement {
 
   void navigateBasedOnRole(BuildContext context) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    if (uid != null) {
       String role = await getUserRole(uid);
       if (role == 'admin') {
         Navigator.pushReplacement(
@@ -55,6 +54,5 @@ class userManagement {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyHomePage()));
       }
-    }
   }
 }
