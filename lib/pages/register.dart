@@ -1,4 +1,6 @@
+import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/landing_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -12,16 +14,20 @@ class _SignUpPageState extends State<SignUpPage> {
   String email = '';
   String username = "";
   String password = "";
+  String _errorMessage = "";
   bool showSpinner = false;
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text('Feel da beats'),
-        ),
-        body: Padding(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Feel da beats'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             TextField(
@@ -63,11 +69,37 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             SizedBox(height: 20),
+            Text(_errorMessage, style: TextStyle(color: Colors.red)),
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
                 setState(() {
                   showSpinner = true;
                 });
+                if (username.isEmpty || email.isEmpty || password.isEmpty) {
+                  setState(() {
+                    _errorMessage = "Field can't empty, fill the field!";
+                  });
+                } else {
+                  try {
+                    await _auth
+                        .createUserWithEmailAndPassword(
+                            email: email, password: password)
+                        .then((value) {
+                      setState(() {
+                        showSpinner = false;
+                      });
+                    });
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MyHomePage()));
+                  } catch (e) {
+                    if (e is FirebaseAuthException) {
+                      setState(() {
+                        _errorMessage = e.message!;
+                      });
+                    }
+                  }
+                }
               },
               child: Text('Sign Up', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
@@ -92,6 +124,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.blue, fontWeight: FontWeight.bold),
                 ))
           ]),
-        ));
+        ),
+      ),
+    );
   }
 }

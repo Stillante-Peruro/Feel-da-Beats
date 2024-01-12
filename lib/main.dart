@@ -21,14 +21,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Feel da Beats',
-        theme: ThemeData(
-          primarySwatch: Colors.cyan,
-        ),
-        home: MyHomePage()
-        //kalo mau ke page login
-        // LoginPage(),
-        );
+      debugShowCheckedModeBanner: false,
+      title: 'Feel da Beats',
+      theme: ThemeData(
+        primarySwatch: Colors.cyan,
+      ),
+      home:
+          // MyHomePage()
+          //kalo mau ke page login
+          LoginPage(),
+    );
   }
 }
