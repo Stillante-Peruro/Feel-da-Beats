@@ -1,12 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:feel_da_beats_app/utils/camera_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:tflite_v2/tflite_v2.dart';
-
-// import 'package:feel_da_beats/utils/face_detector_painter.dart';
-// import 'package:feel_da_beats/utils/detector_view.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 
 class ExpressionSearchPage extends StatefulWidget {
@@ -35,6 +35,9 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   bool _isPageSwitched = false;
   bool _gagalIdentifikasi = false;
   bool _timerAlreadyStarted = false;
+  late Timer _faceDetectionTimer;
+  bool _faceDetected = false;
+  bool _timeRedirect = false;
 
   @override
   void initState() {
@@ -42,16 +45,15 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     if (widget.gagalIdentifikasi == false) {
       _startTimerToCancel();
     }
-    _loadModel();
+    _faceDetectionTimer = Timer(Duration(seconds: 0), () {});
   }
 
   @override
   void dispose() {
     _canProcess = false;
     _faceDetector.close();
-    Tflite.close();
-    _resetTimer();
-    _redirectTimer.cancel(); // Pastikan timer di-cancel saat halaman di-dispose
+    _redirectTimer.cancel();
+    _faceDetectionTimer.cancel();
     super.dispose();
   }
 
@@ -143,7 +145,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.refresh,
+                            icon: const Icon(Icons.refresh,
                                 size: 100), // Icon reload besar
                             onPressed: () {
                               setState(() {
@@ -169,8 +171,8 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                         borderRadius: BorderRadius.circular(16),
                         child: CameraView(
                           customPaint: _customPaint,
-                          onImage: (inputImage, cameraImage) {
-                            _processImage(inputImage, cameraImage);
+                          onImage: (inputImage) {
+                            _processImage(inputImage);
                           },
                           initialCameraLensDirection: _cameraLensDirection,
                           onCameraLensDirectionChanged: (value) =>
@@ -182,136 +184,145 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     );
   }
 
-  _loadModel() async {
-    await Tflite.loadModel(
-      model: 'assets/model.tflite',
-      labels: 'assets/labels.txt',
-    );
-  }
-
-  Future<void> _runModel(CameraImage cameraImage) async {
-    try {
-      if (!_canProcess) return;
-      if (_isBusy) return;
-      _isBusy = true;
-      setState(() {
-        // _text = 'Hola';
-      });
-      var recognitions = await Tflite.runModelOnFrame(
-        bytesList: cameraImage.planes.map((plane) {
-          return plane.bytes;
-        }).toList(),
-        imageHeight: cameraImage.height,
-        imageWidth: cameraImage.width,
-        imageMean: 127.5,
-        imageStd: 127.5,
-        rotation: 90,
-        numResults: 1,
-        threshold: 0.1,
-        asynch: true,
-      );
-      _isBusy = false;
-
-      if (recognitions != null && recognitions.isNotEmpty) {
-        var detectedEmotion = recognitions[0]['label'];
-
-        if (detectedEmotion != null && detectedEmotion != emosi) {
-          setState(() {
-            emosi = detectedEmotion;
-            _resetTimer();
-          });
-        } else if (emosi == detectedEmotion) {
-          _startTimerToRedirect();
-        } else {
-          _resetTimer();
-          setState(() {
-            emosi = 'Tidak Ada Wajah Terdeteksi';
-          });
-        }
-      } else {
-        _resetTimer();
-        setState(() {
-          emosi = 'Tidak Ada Wajah Terdeteksi';
-        });
-      }
-    } catch (e) {
-      print('Error during model inference: $e');
-    }
-  }
-
-  void _startTimerToRedirect() {
-    String temp = emosi;
-    _redirectTimer = Timer(Duration(seconds: 4), () {
-      if (temp != 'Tidak Ada Wajah Terdeteksi' &&
-          emosi == temp &&
-          !_isPageSwitched) {
-        _isPageSwitched = true;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RecommendedSongsPage(emotion: emosi),
-          ),
-        );
-      }
-    });
-  }
-
   void _startTimerToCancel() {
     if (!_timerAlreadyStarted) {
-      _redirectTimer = Timer(Duration(seconds: 10), () {
-        _isPageSwitched = true;
-
-        // Ubah nilai _gagalIdentifikasi menjadi true
-        setState(() {
-          _gagalIdentifikasi = true;
-        });
-
-        // Pindah ke halaman baru dengan membawa argument
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                ExpressionSearchPage(gagalIdentifikasi: _gagalIdentifikasi),
-          ),
-        ); // Hapus halaman saat ini dari tumpukan halaman
-      });
-
       _timerAlreadyStarted = true;
+      _redirectTimer = Timer(Duration(seconds: 10), () {
+        setState(() {
+          _isPageSwitched = true;
+          _gagalIdentifikasi = true;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ExpressionSearchPage(gagalIdentifikasi: _gagalIdentifikasi),
+            ),
+          );
+        });
+      });
     }
   }
 
-  void _resetTimer() {
-    _redirectTimer.cancel();
-    _isPageSwitched = false; // Reset _isPageSwitched
-  }
-
-  Future<void> _processImage(
-      InputImage inputImage, CameraImage cameraImage) async {
+  Future<void> _processImage(InputImage inputImage) async {
+    InputImage temp;
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
-    setState(() {
-      // _text = 'Hola';
-    });
+    // setState(() {
+    //   // _text = 'Hola';
+    // });
     final faces = await _faceDetector.processImage(inputImage);
 
     _isBusy = false;
 
-    if (faces.isNotEmpty) {
-      setState(() {
-        emosi = "Wajah Terdeteksi";
-        _startTimerToRedirect();
-        // _runModel(cameraImage);  //seharusny kalo ini jalan bener. tapi ado exception jadi dk jalan dio
-      });
-    } else {
-      // _startTimerToCancel();
-      setState(() {
-        emosi = 'Tidak Ada Wajah Terdeteksi(faces)';
-      });
-    }
-
     if (mounted) {
-      setState(() {});
+      if (faces.isNotEmpty) {
+        setState(() {
+          emosi = 'Wajah Terdeteksi';
+          if (!_faceDetected) {
+            _faceDetected = true;
+            temp = inputImage;
+            if (!_timeRedirect) {
+              _timeRedirect = true;
+              _startFaceDetectionTimer(temp, faces.last);
+            }
+          }
+          // _startFaceDetectionTimer(inputImage, faces[0]);
+        });
+      } else {
+        setState(() {
+          emosi = 'Tidak Ada Wajah Terdeteksi';
+          if (_faceDetected) {
+            _faceDetected = false;
+            _faceDetectionTimer.cancel();
+          }
+        });
+      }
     }
+  }
+
+  void _startFaceDetectionTimer(InputImage inputImage, Face face) {
+    bool imageSaved = false;
+    _faceDetectionTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (timer.tick >= 3 && !imageSaved) {
+        imageSaved = true;
+        _saveFaceImage(inputImage, face);
+        timer.cancel();
+      }
+    });
+  }
+
+  Future<void> _saveFaceImage(InputImage inputImage, Face face) async {
+    final image = decodeYUV420SP(inputImage);
+
+    if (!_isPageSwitched) {
+      try {
+        final tempDir = await getTemporaryDirectory();
+        final filePath = '${tempDir.path}/face_image.jpg';
+        File(filePath).writeAsBytesSync(img.encodeJpg(image));
+        setState(() {
+          _isPageSwitched = true;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecommendedSongsPage(imagePath: filePath),
+            ),
+          );
+        });
+      } catch (e) {
+        print('Error saving face image: $e');
+      }
+    }
+  }
+
+  img.Image decodeYUV420SP(InputImage image) {
+    final width = image.metadata!.size.width.toInt();
+    final height = image.metadata!.size.height.toInt();
+
+    Uint8List yuv420sp = image.bytes!;
+
+    final outImg = img.Image(width, height);
+
+    final int frameSize = width * height;
+
+    for (int j = 0, yp = 0; j < height; j++) {
+      int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
+      for (int i = 0; i < width; i++, yp++) {
+        int y = (0xff & yuv420sp[yp]) - 16;
+        if (y < 0) y = 0;
+        if ((i & 1) == 0) {
+          v = (0xff & yuv420sp[uvp++]) - 128;
+          u = (0xff & yuv420sp[uvp++]) - 128;
+        }
+        int y1192 = 1192 * y;
+        int r = (y1192 + 1634 * v);
+        int g = (y1192 - 833 * v - 400 * u);
+        int b = (y1192 + 2066 * u);
+
+        if (r < 0) {
+          r = 0;
+        } else if (r > 262143) {
+          r = 262143;
+        }
+        if (g < 0) {
+          g = 0;
+        } else if (g > 262143) {
+          g = 262143;
+        }
+        if (b < 0) {
+          b = 0;
+        } else if (b > 262143) {
+          b = 262143;
+        }
+
+        r = (r < 0) ? 0 : ((r > 262143) ? 262143 : r);
+        g = (g < 0) ? 0 : ((g > 262143) ? 262143 : g);
+        b = (b < 0) ? 0 : ((b > 262143) ? 262143 : b);
+
+        outImg.setPixelRgba(i, j, r >> 10, g >> 10, b >> 10, 255);
+      }
+    }
+    final rotatedImg = img.copyRotate(outImg, 270);
+    return rotatedImg;
   }
 }
