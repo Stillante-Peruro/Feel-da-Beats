@@ -13,7 +13,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   List _allResults = [];
   List _resultList = [];
   final TextEditingController _searchController = TextEditingController();
@@ -31,6 +30,7 @@ class _SearchPageState extends State<SearchPage> {
   //   print('all urls added');
   // }
 
+  @override
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
     Firebase.initializeApp().whenComplete(() {
@@ -38,6 +38,7 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     _searchController.addListener(_onSearchChanged);
+    print(_allResults);
     super.initState();
   }
 
@@ -165,7 +166,8 @@ class _SearchPageState extends State<SearchPage> {
                                                     ['artist'],
                                                 albumImgUrl: _resultList[index]
                                                     ["albumImgUrl"],
-                                                audioPath: _resultList[index]["audioPath"],
+                                                audioPath: _resultList[index]
+                                                    ["audioPath"],
                                               )));
                                 },
                               );

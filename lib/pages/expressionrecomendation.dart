@@ -1,11 +1,13 @@
+import 'dart:io';
+import 'package:tflite_v2/tflite_v2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/pages/song_page.dart';
 import 'package:flutter/material.dart';
 
 class RecommendedSongsPage extends StatefulWidget {
-  final String emotion;
+  final String imagePath;
 
-  const RecommendedSongsPage({Key? key, required this.emotion})
+  const RecommendedSongsPage({Key? key, required this.imagePath})
       : super(key: key);
 
   @override
@@ -13,12 +15,29 @@ class RecommendedSongsPage extends StatefulWidget {
 }
 
 class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
+  String emotion = "";
+
   List _allSongs = [];
   List _happyPlaylist = [];
   List _angryPlaylist = [];
   List _sadPlaylist = [];
 
-  getAllSongs() async {
+  @override
+  void initState() {
+    getAllSongs();
+    getAngrySongs();
+    getHappySongs();
+    getSadSongs();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    File(widget.imagePath).deleteSync(recursive: true);
+    super.dispose();
+  }
+
+  loadModel getAllSongs() async {
     var data = await FirebaseFirestore.instance
         .collection('songs')
         .orderBy('title')
@@ -67,7 +86,7 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     // Di sini, Anda dapat menulis logika untuk mengembalikan daftar lagu berdasarkan emosi
     // Misalnya, jika emosi adalah 'happy', Anda bisa mengembalikan daftar lagu yang ceria.
     // Tambahkan logika yang sesuai dengan aplikasi Anda.
-    switch (widget.emotion) {
+    switch (emotion) {
       case 'Happy':
         return _happyPlaylist;
       case 'Sad':
@@ -77,15 +96,6 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
       default:
         return _allSongs;
     }
-  }
-
-  @override
-  void initState() {
-    getAllSongs();
-    getAngrySongs();
-    getHappySongs();
-    getSadSongs();
-    super.initState();
   }
 
   @override
