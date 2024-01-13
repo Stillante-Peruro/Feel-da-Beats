@@ -1,4 +1,4 @@
-import 'package:feel_da_beats_app/pages/dashboard.dart';
+// import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/register.dart';
 import 'package:feel_da_beats_app/services/userManagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';

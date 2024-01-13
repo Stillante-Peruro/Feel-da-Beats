@@ -1,6 +1,6 @@
-import 'package:feel_da_beats_app/pages/dashboard.dart';
+// import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/landing_page.dart';
-import 'package:feel_da_beats_app/services/userManagement.dart';
+// import 'package:feel_da_beats_app/services/userManagement.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             // MyHomePage()
             //kalo mau ke page login
             LoginPage()
-            // userManagement().handleAuth()
-            );
+        // userManagement().handleAuth()
+        );
   }
 }

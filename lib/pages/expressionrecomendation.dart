@@ -28,6 +28,8 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     getAngrySongs();
     getHappySongs();
     getSadSongs();
+    _loadModel();
+    _runModel(widget.imagePath);
     super.initState();
   }
 
@@ -37,7 +39,28 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     super.dispose();
   }
 
-  loadModel getAllSongs() async {
+  _loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/model.tflite',
+      labels: 'assets/labels.txt',
+    );
+  }
+
+  Future<void> _runModel(String imagePath) async {
+    try {
+      var recognitions = await Tflite.runModelOnImage(path: imagePath);
+
+      if (recognitions != null && recognitions.isNotEmpty) {
+        var detectedEmotion = recognitions[0]['label'];
+        emotion = detectedEmotion;
+        print('emosi: $emotion');
+      }
+    } catch (e) {
+      print('Error during model inference: $e');
+    }
+  }
+
+  getAllSongs() async {
     var data = await FirebaseFirestore.instance
         .collection('songs')
         .orderBy('title')
@@ -105,7 +128,7 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recommended Songs'),
+        title: Text('Recommended Songs: $emotion'),
       ),
       body: Container(
         child: Column(

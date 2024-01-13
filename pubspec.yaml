@@ -44,15 +44,10 @@ dependencies:
   tflite_v2: ^1.0.0
   google_ml_kit: ^0.16.3
   google_mlkit_commons: ^0.6.1
-<<<<<<< HEAD
-  tflite_flutter: ^0.10.4
-  tflite_flutter_helper_plus: ^0.0.2
   flutter_sound: ^9.2.13
   path_provider: ^2.1.2
   google_mlkit_face_detection: ^0.9.0
-=======
   firebase_auth: ^4.16.0
->>>>>>> ce7e25d1296768718f7d5e872f132c30fe9045b8
 
 dev_dependencies:
   flutter_test:
