@@ -1,5 +1,8 @@
-// import 'package:feel_da_beats_app/pages/dashboard.dart';
+import 'package:feel_da_beats_app/pages/dashboard.dart';
+import 'dart:async';
+
 import 'package:feel_da_beats_app/pages/landing_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:feel_da_beats_app/services/userManagement.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -7,31 +10,61 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options: const FirebaseOptions(
           apiKey: 'AIzaSyCWRMyolLX6oUjGn4DxMqi6L2BBpcr4VZs',
           appId: '1:154614009785:android:dd33258cc983f864a23068',
           storageBucket: 'feel-da-beats.appspot.com',
           messagingSenderId: '154614009785',
           projectId: 'feel-da-beats'));
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  // This widget is the root of your application.
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late StreamSubscription<User?> user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    user.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Feel da Beats',
-        theme: ThemeData(
-          primarySwatch: Colors.cyan,
-        ),
-        home:
-            // MyHomePage()
-            //kalo mau ke page login
-            LoginPage()
-        // userManagement().handleAuth()
-        );
+      debugShowCheckedModeBanner: false,
+      title: 'Feel da Beats',
+      theme: ThemeData(
+        primarySwatch: Colors.cyan,
+      ),
+      initialRoute: FirebaseAuth.instance.currentUser == null
+          ? LoginPage.id
+          : MyHomePage.id,
+      routes: {
+        LoginPage.id: (context) => LoginPage(),
+        MyHomePage.id: (context) => MyHomePage(),
+      },
+      home: MyHomePage(),
+
+      // userManagement().handleAuth()
+    );
   }
 }

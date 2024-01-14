@@ -36,8 +36,11 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   bool _gagalIdentifikasi = false;
   bool _timerAlreadyStarted = false;
   late Timer _faceDetectionTimer;
-  bool _faceDetected = false;
+  // bool _faceDetected = false;
   bool _timeRedirect = false;
+  late InputImage gambarBaru;
+  // late Face wajahBaru;
+  Directory? tempDir;
 
   @override
   void initState() {
@@ -54,19 +57,42 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     _faceDetector.close();
     _redirectTimer.cancel();
     _faceDetectionTimer.cancel();
+    _cleanUpResources();
     super.dispose();
+  }
+
+  Future<void> _cleanUpResources() async {
+    if (tempDir != null) {
+      try {
+        tempDir!.deleteSync(recursive: true);
+        tempDir!.create(recursive: true);
+      } catch (e) {
+        print('Error cleaning up resources: $e');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: const PreferredSize(
+        preferredSize: Size(200, 90),
+        child: SizedBox(
+          width: 500,
+          height: 70,
+        ),
+      ),
+      floatingActionButton: BackButton(
+        style: ButtonStyle(iconSize: MaterialStateProperty.all(30)),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Center(
             child: Text(
-              'Feel Your Expression',
-              textAlign: TextAlign.center,
+              'Feel Your Tone',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.bold,
@@ -75,7 +101,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                 shadows: [
                   Shadow(
                     blurRadius: 4,
-                    offset: Offset(0, 4),
+                    offset: Offset(0, 3),
                     color: Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 ],
@@ -94,7 +120,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                 shadows: [
                   Shadow(
                     blurRadius: 4,
-                    offset: Offset(0, 4),
+                    offset: Offset(0, 3),
                     color: Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 ],
@@ -103,17 +129,17 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
           ),
           const Center(
             child: Text(
-              'Scan your emotion here',
+              'Scan your song here',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.bold,
                 fontSize: 25,
-                color: Color(0x847B7B),
+                color: Color(0xff847B7B),
                 shadows: [
                   Shadow(
                     blurRadius: 4,
-                    offset: Offset(0, 4),
+                    offset: Offset(0, 2),
                     color: Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 ],
@@ -138,7 +164,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                     borderRadius: BorderRadius.circular(16),
                     color: Colors.grey),
                 width: 370,
-                height: 400,
+                height: 500,
                 child: widget.gagalIdentifikasi
                     ? Center(
                         child: Column(
@@ -188,23 +214,26 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     if (!_timerAlreadyStarted) {
       _timerAlreadyStarted = true;
       _redirectTimer = Timer(Duration(seconds: 10), () {
-        setState(() {
-          _isPageSwitched = true;
-          _gagalIdentifikasi = true;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ExpressionSearchPage(gagalIdentifikasi: _gagalIdentifikasi),
-            ),
-          );
-        });
+        if (emosi == 'Tidak Ada Wajah Terdeteksi') {
+          setState(() {
+            _isPageSwitched = true;
+            _gagalIdentifikasi = true;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ExpressionSearchPage(gagalIdentifikasi: _gagalIdentifikasi),
+              ),
+            );
+          });
+        } else {
+          _saveFaceImage(gambarBaru);
+        }
       });
     }
   }
 
   Future<void> _processImage(InputImage inputImage) async {
-    InputImage temp;
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
@@ -215,50 +244,60 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
     _isBusy = false;
 
+    // if (_faceDetected) {
+    gambarBaru = inputImage;
+    // wajahBaru = faces.last;
+    // }
+
     if (mounted) {
       if (faces.isNotEmpty) {
+        print('ado rai');
         setState(() {
+          // if (!_faceDetected) {
+          // _faceDetected = true;
           emosi = 'Wajah Terdeteksi';
-          if (!_faceDetected) {
-            _faceDetected = true;
-            temp = inputImage;
-            if (!_timeRedirect) {
-              _timeRedirect = true;
-              _startFaceDetectionTimer(temp, faces.last);
-            }
-          }
-          // _startFaceDetectionTimer(inputImage, faces[0]);
+
+          _startFaceDetectionTimer(faces.first);
+
+          // }
         });
       } else {
+        print('ktk rai');
         setState(() {
+          // if (_faceDetected) {
           emosi = 'Tidak Ada Wajah Terdeteksi';
-          if (_faceDetected) {
-            _faceDetected = false;
-            _faceDetectionTimer.cancel();
-          }
+          // _faceDetected = false;
+          _timeRedirect = false;
+          // _faceDetectionTimer.cancel();
+          // }
         });
       }
     }
   }
 
-  void _startFaceDetectionTimer(InputImage inputImage, Face face) {
-    bool imageSaved = false;
-    _faceDetectionTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (timer.tick >= 3 && !imageSaved) {
-        imageSaved = true;
-        _saveFaceImage(inputImage, face);
-        timer.cancel();
-      }
-    });
+  void _startFaceDetectionTimer(Face face) {
+    if (!_timeRedirect) {
+      _timeRedirect = true;
+      bool imageSaved = false;
+      _faceDetectionTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (timer.tick >= 3 && !imageSaved) {
+          imageSaved = true;
+          if (emosi == 'Wajah Terdeteksi') {
+            _saveFaceImage(gambarBaru);
+            timer.cancel();
+          }
+        }
+      });
+    }
   }
 
-  Future<void> _saveFaceImage(InputImage inputImage, Face face) async {
+  Future<void> _saveFaceImage(InputImage inputImage) async {
     final image = decodeYUV420SP(inputImage);
 
     if (!_isPageSwitched) {
       try {
-        final tempDir = await getTemporaryDirectory();
-        final filePath = '${tempDir.path}/face_image.jpg';
+        tempDir = await getTemporaryDirectory();
+        String filePath = '${tempDir!.path}/face_image.jpg';
         File(filePath).writeAsBytesSync(img.encodeJpg(image));
         setState(() {
           _isPageSwitched = true;

@@ -6,6 +6,7 @@ import 'package:feel_da_beats_app/pages/profile.dart';
 import 'package:feel_da_beats_app/pages/hum_to_search.dart';
 
 class MyHomePage extends StatefulWidget {
+  static String id = "dashboard";
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
@@ -40,9 +41,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Stack(
         children: [
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            bottom: _isSearchActive ? 105 : 30,
+            bottom: _isSearchActive ? 115 : 30,
             left: 0,
             right: 0,
             child: Container(
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: _isSearchActive ? 50 : 25,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.cyan,
+                        color: Color(0xff3EECE1),
                       ),
                       child: IconButton(
                         icon: Icon(Icons.emoji_emotions, color: Colors.white),
@@ -66,7 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ExpressionSearchPage(
+                                builder: (context) =>
+                                    const ExpressionSearchPage(
                                       gagalIdentifikasi: false,
                                     )),
                           );
@@ -80,13 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            bottom: _isSearchActive ? 60 : 45,
+            bottom: _isSearchActive ? 65 : 45,
             left: 0,
-            right: _isSearchActive ? 140 : 30,
+            right: _isSearchActive ? 160 : 30,
             child: AnimatedSize(
-              duration: const Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               child: Container(
                 height: 50,
@@ -100,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: _isSearchActive ? 50 : 25,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.cyan,
+                          color: Color(0xff3EECE1),
                         ),
                         child: IconButton(
                           icon: Icon(Icons.search, color: Colors.white),
@@ -123,10 +125,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              bottom: _isSearchActive ? 60 : 45,
-              left: _isSearchActive ? 140 : 30,
+              bottom: _isSearchActive ? 65 : 45,
+              left: _isSearchActive ? 160 : 30,
               right: 0,
               child: Container(
                   height: 50,
@@ -140,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: _isSearchActive ? 50 : 25,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.cyan,
+                            color: Color(0xff3EECE1),
                           ),
                           child: IconButton(
                             icon: Icon(Icons.music_note, color: Colors.white),
@@ -219,17 +221,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               child: Container(
-                height: 60,
-                width: 60,
+                height: 65,
+                width: 65,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.blue,
+                  color: Color(0xff3EB6EC),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.search,
                     color: Colors.white,
-                    size: 35,
+                    size: 40,
                   ),
                 ),
               ),

@@ -29,14 +29,25 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     getHappySongs();
     getSadSongs();
     _loadModel();
-    _runModel(widget.imagePath);
     super.initState();
   }
 
   @override
   void dispose() {
-    File(widget.imagePath).deleteSync(recursive: true);
+    // File(widget.imagePath).deleteSync(recursive: true);
+    _deleteFile(widget.imagePath);
     super.dispose();
+  }
+
+  void _deleteFile(String filePath) {
+    try {
+      final file = File(filePath);
+      if (file.existsSync()) {
+        file.deleteSync(recursive: true);
+      }
+    } catch (e) {
+      print('Error deleting file: $e');
+    }
   }
 
   _loadModel() async {
@@ -44,12 +55,14 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
       model: 'assets/model.tflite',
       labels: 'assets/labels.txt',
     );
+    _runModel(widget.imagePath);
   }
 
   Future<void> _runModel(String imagePath) async {
     try {
+      print('jalan1');
       var recognitions = await Tflite.runModelOnImage(path: imagePath);
-
+      print('jalan2');
       if (recognitions != null && recognitions.isNotEmpty) {
         var detectedEmotion = recognitions[0]['label'];
         emotion = detectedEmotion;
@@ -133,6 +146,7 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
       body: Container(
         child: Column(
           children: [
+            // Image.file(File(widget.imagePath)),
             Expanded(
               child: ListView.builder(
                 itemCount: recommendedSongs.length,
