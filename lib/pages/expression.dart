@@ -22,7 +22,7 @@ class ExpressionSearchPage extends StatefulWidget {
 class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
-      performanceMode: FaceDetectorMode.fast,
+      performanceMode: FaceDetectorMode.accurate,
     ),
   );
   bool _canProcess = true;
@@ -57,7 +57,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     _faceDetector.close();
     _redirectTimer.cancel();
     _faceDetectionTimer.cancel();
-    _cleanUpResources();
+    // _cleanUpResources();
     super.dispose();
   }
 

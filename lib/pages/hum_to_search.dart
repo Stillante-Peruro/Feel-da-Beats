@@ -1,4 +1,12 @@
+import 'dart:async';
+import 'dart:math';
+import 'package:flutter_acrcloud/flutter_acrcloud.dart';
+// import 'package:acr_cloud_sdk/acr_cloud_sdk.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+// import '../utils/music_visualizer.dart';
 
 class MusicPage extends StatefulWidget {
   const MusicPage({super.key});
@@ -7,7 +15,168 @@ class MusicPage extends StatefulWidget {
   State<MusicPage> createState() => _MusicPageState();
 }
 
-class _MusicPageState extends State<MusicPage> {
+class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
+  ACRCloudResponseMusicItem? music;
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _heightAnimations;
+  bool _isRecording = false;
+  bool _success = false;
+  String _text = 'Tekan tombol micophone untuk mulai mendeteksi lagu';
+  String _loadingText = 'Putar, nyanyikan, atau senandungkan lagu';
+  late Timer _timer;
+  late ACRCloudSession _acrCloud;
+
+  // final List<int> durasi = [500, 800, 600, 700, 900];
+  int _generateRandomDuration() {
+    final random = Random();
+    return random.nextInt(400) + 500;
+  }
+
+  Future<void> _requestMicrophonePermission() async {
+    final status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _checkPermission() async {
+    await _requestMicrophonePermission();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermission();
+    ACRCloud.setUp(const ACRCloudConfig(
+        "bd5e3132a5d266920f2d0f05655093d3",
+        "S8MDMZdLJs7fifE0OLYARSTlmV8Menk8IoCbZjDE",
+        "identify-ap-southeast-1.acrcloud.com"));
+    _controllers = List.generate(
+      8,
+      (index) => AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: _generateRandomDuration()),
+      ),
+    );
+
+    Timer.periodic(const Duration(seconds: 4), (timer) {
+      _updateAnimationDurations();
+    });
+
+    _heightAnimations = List.generate(
+      8,
+      (index) => Tween<double>(
+        begin: 13.0,
+        end: 200.0,
+      ).animate(
+        CurvedAnimation(
+          parent: _controllers[index],
+          curve: Curves.easeInOut,
+        ),
+      ),
+    );
+  }
+
+  void _updateAnimationDurations() {
+    for (var controller in _controllers) {
+      controller.duration = Duration(milliseconds: _generateRandomDuration());
+    }
+  }
+
+  Future<void> _startRecording() async {
+    setState(() {
+      _isRecording = true;
+      _success = false;
+      _text = 'Tekan tombol micophone untuk mulai mendeteksi lagu';
+      _loadingText = 'Putar, nyanyikan, atau senandungkan lagu';
+    });
+    for (var controller in _controllers) {
+      controller.repeat(reverse: true);
+    }
+    _acrCloud = ACRCloud.startSession();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timer.tick == 5) {
+        setState(() {
+          _loadingText = 'Teruskan';
+        });
+      }
+      if (timer.tick == 10) {
+        setState(() {
+          _loadingText = 'Sedikit lagi';
+        });
+      }
+      if (timer.tick == 15) {
+        setState(() {
+          _text = 'Gagal Mendeteksi lagu, mohon coba lagi';
+          _acrCloud.cancel();
+          _stopRecording();
+        });
+      }
+    });
+
+    final result = await _acrCloud.result;
+    if (result == null) {
+      setState(() {
+        for (var controller in _controllers) {
+          controller.animateBack(0.0);
+        }
+        _stopRecording();
+        _acrCloud.cancel();
+      });
+      return;
+    } else if (result.metadata == null) {
+      setState(() {
+        for (var controller in _controllers) {
+          controller.animateBack(0.0);
+        }
+        _stopRecording();
+        _acrCloud.cancel();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Tidak dapat mengenali lagu'),
+      ));
+      return;
+    }
+    setState(() {
+      music = result.metadata!.music.first;
+    });
+    if (music != null) {
+      setState(() {
+        _stopRecording();
+      });
+      if (!_success) {
+        setState(() {
+          _success = true;
+          _acrCloud.cancel();
+        });
+        [
+          print('Track: ${music!.title}\n'),
+          print('Album: ${music!.album.name}\n'),
+          print('Artist: ${music!.artists.first.name}\n')
+        ];
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Berhasil mengenali lagu: ${music!.title} by Artist: ${music!.artists.first.name}'),
+        ));
+      }
+    }
+  }
+
+  void _stopRecording() {
+    setState(() {
+      _isRecording = false;
+    });
+    _acrCloud.cancel();
+    _timer.cancel(); // Batalkan timer
+    if (!_isRecording) {
+      for (var controller in _controllers) {
+        controller.animateBack(0.0);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,31 +260,115 @@ class _MusicPageState extends State<MusicPage> {
                 borderRadius: BorderRadius.circular(16),
                 color: Colors.grey,
               ),
-              child: Icon(
-                Icons.graphic_eq,
-                size: 350,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 300,
+                      height: 120,
+                      child: Text(
+                        _isRecording ? _loadingText : _text,
+                        style: TextStyle(fontSize: 25, fontFamily: 'Roboto'),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    Center(
+                      child: SizedBox(
+                        width: 350,
+                        height: 200,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(8, (index) {
+                            return AnimatedBuilder(
+                              animation: _heightAnimations[index],
+                              builder: (context, child) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Container(
+                                    width: 15,
+                                    height: _heightAnimations[index].value,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: _getColorByIndex(index),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child: Container(
               height: 90,
               width: 90,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(45),
-                  border: Border.all(color: const Color(0xff3EB6EC), width: 4)),
+                borderRadius: BorderRadius.circular(45),
+                border: Border.all(color: const Color(0xff3EB6EC), width: 4),
+              ),
               child: IconButton(
-                  icon: const Icon(
-                    Icons.mic_none,
-                    color: Color(0xff3EB6EC),
-                  ),
-                  iconSize: 40,
-                  onPressed: () {}),
+                icon: _isRecording
+                    ? const Icon(Icons.stop, color: Color(0xff3EB6EC))
+                    : const Icon(
+                        Icons.mic_none,
+                        color: Color(0xff3EB6EC),
+                      ),
+                iconSize: 40,
+                onPressed: () {
+                  _isRecording ? _stopRecording() : _startRecording();
+                },
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
+  }
+
+  Color _getColorByIndex(int index) {
+    switch (index % 4) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.blue;
+      case 2:
+        return Colors.green;
+      case 3:
+        return Colors.yellow;
+      default:
+        return Colors.red;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant MusicPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isRecording) {
+      for (var controller in _controllers) {
+        controller.repeat(reverse: true);
+      }
+    } else {
+      for (var controller in _controllers) {
+        controller.stop();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    _timer.cancel();
+    _acrCloud.dispose();
+    super.dispose();
   }
 }

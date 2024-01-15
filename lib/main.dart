@@ -16,11 +16,11 @@ void main() async {
           storageBucket: 'feel-da-beats.appspot.com',
           messagingSenderId: '154614009785',
           projectId: 'feel-da-beats'));
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
 
   @override
   _MyAppState createState() => _MyAppState();

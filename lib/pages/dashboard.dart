@@ -17,7 +17,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   bool _isSearchActive = false;
   double _quickBallPositionY = 30;
-
+  bool _isMusic = false;
+  bool _isSearch = false;
+  bool _isEmoji = false;
   double _iconStartPositionX = 0;
   double _lastDragPositionX = 0;
   double _iconStartPositionY = 0;
@@ -53,8 +55,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      height: _isSearchActive ? 50 : 25,
-                      width: _isSearchActive ? 50 : 25,
+                      height: _isSearchActive
+                          ? _isEmoji
+                              ? 65
+                              : 50
+                          : 25,
+                      width: _isSearchActive
+                          ? _isEmoji
+                              ? 65
+                              : 50
+                          : 25,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0xff3EECE1),
@@ -98,8 +108,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        height: _isSearchActive ? 50 : 25,
-                        width: _isSearchActive ? 50 : 25,
+                        height: _isSearchActive
+                            ? _isSearch
+                                ? 60
+                                : 50
+                            : 25,
+                        width: _isSearchActive
+                            ? _isSearch
+                                ? 60
+                                : 50
+                            : 25,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xff3EECE1),
@@ -138,8 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
-                          height: _isSearchActive ? 50 : 25,
-                          width: _isSearchActive ? 50 : 25,
+                          height: _isSearchActive
+                              ? _isMusic
+                                  ? 65
+                                  : 50
+                              : 25,
+                          width: _isSearchActive
+                              ? _isMusic
+                                  ? 65
+                                  : 50
+                              : 25,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Color(0xff3EECE1),
@@ -181,7 +207,36 @@ class _MyHomePageState extends State<MyHomePage> {
               onPanUpdate: (details) {
                 _lastDragPositionX = details.localPosition.dx;
                 _lastDragPositionY = details.localPosition.dy;
-                setState(() {});
+                setState(() {
+                  double distanceX = _lastDragPositionX - _iconStartPositionX;
+                  double distanceY = _lastDragPositionY - _iconStartPositionY;
+
+                  if (distanceX.abs() > 30 || distanceY.abs() > 20) {
+                    if (_lastDragPositionX < _iconStartPositionX - 35 &&
+                        _lastDragPositionY < _iconStartPositionY &&
+                        _lastDragPositionY < _iconStartPositionY) {
+                      _isEmoji = false;
+                      _isMusic = false;
+                      _isSearch = true;
+                    } else if (_lastDragPositionY < _iconStartPositionY - 50 &&
+                        _lastDragPositionX - 50 < _iconStartPositionX &&
+                        _lastDragPositionX + 50 > _iconStartPositionX) {
+                      _isEmoji = true;
+                      _isMusic = false;
+                      _isSearch = false;
+                    } else if (_lastDragPositionX > _iconStartPositionX + 35 &&
+                        _lastDragPositionY < _iconStartPositionY &&
+                        _lastDragPositionY < _iconStartPositionY - 10) {
+                      _isEmoji = false;
+                      _isMusic = true;
+                      _isSearch = false;
+                    }
+                  } else {
+                    _isEmoji = false;
+                    _isMusic = false;
+                    _isSearch = false;
+                  }
+                });
               },
               onPanEnd: (details) {
                 setState(() {
@@ -218,6 +273,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     }
                   }
+                  _isEmoji = false;
+                  _isMusic = false;
+                  _isSearch = false;
                 });
               },
               child: Container(
