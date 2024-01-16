@@ -93,13 +93,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Search',
-        ),
-        backgroundColor: Colors.cyan,
-      ),
-      // backgroundColor: Colors.black,
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Container(
@@ -107,18 +100,19 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Search for a Music',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  )),
-              SizedBox(height: 20),
+              GestureDetector(
+                child: Icon(Icons.arrow_back),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(height: 10),
               TextField(
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color.fromARGB(255, 235, 235, 235),
+                  fillColor: Color.fromRGBO(62, 182, 236, 1),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                     borderSide: BorderSide.none,
                   ),
                   hintText: 'Enter song name',
@@ -127,6 +121,20 @@ class _SearchPageState extends State<SearchPage> {
                 controller: _searchController,
               ),
               SizedBox(height: 20),
+              Text('For you',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 20,
+                    color: Color.fromRGBO(66, 87, 154, 1),
+                    shadows: [
+                      Shadow(
+                          offset: Offset(0, 4),
+                          color: Color.fromRGBO(0, 0, 0, 0.4),
+                          blurRadius: 4)
+                    ],
+                    fontWeight: FontWeight.bold,
+                  )),
+              SizedBox(height: 5),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -146,30 +154,57 @@ class _SearchPageState extends State<SearchPage> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
+                                        fontFamily: 'Poppins',
                                         fontSize: 16,
+                                        color: Color.fromRGBO(99, 124, 178, 1),
+                                        shadows: [
+                                          Shadow(
+                                              offset: Offset(0, 3),
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 0.4),
+                                              blurRadius: 4)
+                                        ],
                                         fontWeight: FontWeight.bold)),
                                 subtitle: Text(_resultList[index]['artist'],
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 16)),
-                                leading: Image.network(
-                                    _resultList[index]["albumImgUrl"]),
-                                onTap: () {
-                                  print('clicked');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SongPage(
-                                                title: _resultList[index]
-                                                    ['title'],
-                                                artist: _resultList[index]
-                                                    ['artist'],
-                                                albumImgUrl: _resultList[index]
-                                                    ["albumImgUrl"],
-                                                audioPath: _resultList[index]
-                                                    ["audioPath"],
-                                              )));
-                                },
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Poppins',
+                                    )),
+                                leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Container(
+                                      width: 57,
+                                      height: 57,
+                                      child: Image.network(
+                                        _resultList[index]["albumImgUrl"],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )),
+                                trailing: GestureDetector(
+                                  onTap: () {
+                                    print('clicked');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SongPage(
+                                                  title: _resultList[index]
+                                                      ['title'],
+                                                  artist: _resultList[index]
+                                                      ['artist'],
+                                                  albumImgUrl:
+                                                      _resultList[index]
+                                                          ["albumImgUrl"],
+                                                  audioPath: _resultList[index]
+                                                      ["audioPath"],
+                                                )));
+                                  },
+                                  child: Icon(
+                                    Icons.play_circle_fill_rounded,
+                                    color: Color.fromRGBO(62, 182, 236, 1),
+                                  ),
+                                ),
                               );
                             });
                   },
