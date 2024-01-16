@@ -54,6 +54,7 @@ dependencies:
   acr_cloud_sdk: ^2.0.2
   permission_handler: ^10.4.5
   flutter_svg: ^2.0.9
+  tflite_flutter: ^0.10.4
 
 dev_dependencies:
   flutter_test:

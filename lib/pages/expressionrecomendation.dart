@@ -34,7 +34,7 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
 
   @override
   void dispose() {
-    // File(widget.imagePath).deleteSync(recursive: true);
+    File(widget.imagePath).deleteSync(recursive: true);
     _deleteFile(widget.imagePath);
     super.dispose();
   }
@@ -134,54 +134,106 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     }
   }
 
+  Color _emotionColor() {
+    switch (emotion) {
+      case 'Happy':
+        return Colors.pinkAccent;
+      case 'Sad':
+        return Colors.lightBlue;
+      case 'Angry':
+        return Colors.red;
+      case 'Neutral':
+        return Colors.lightGreen;
+      default:
+        return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Mendapatkan rekomendasi lagu berdasarkan emosi
     List recommendedSongs = getSongsBasedOnEmotion();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Recommended Songs: $emotion'),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            // Image.file(File(widget.imagePath)),
-            Expanded(
-              child: ListView.builder(
-                itemCount: recommendedSongs.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(recommendedSongs[index]['title'],
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    subtitle: Text(recommendedSongs[index]['artist'],
-                        style: TextStyle(fontSize: 16)),
-                    leading:
-                        Image.network(recommendedSongs[index]['albumImgUrl']),
-                    // Aksi ketika item di klik (misalnya putar lagu, buka detail lagu, dll.)
-                    onTap: () {
-                      // Tambahkan logika untuk menangani aksi ketika lagu dipilih
-                      // Misalnya, putar lagu atau tampilkan detail lagu.
-                      // Sesuaikan dengan fitur aplikasi Anda.
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => SongPage(
-                                  title: recommendedSongs[index]['title'],
-                                  artist: recommendedSongs[index]['artist'],
-                                  albumImgUrl: recommendedSongs[index]
-                                      ['albumImgUrl'],
-                                  audioPath: recommendedSongs[index]
-                                      ['audioPath']))));
-                    },
-                  );
-                },
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Container(
+            height: 210,
+            width: 370,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: _emotionColor()),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, top: 15),
+              child: Text(
+                "$emotion mood",
+                style: const TextStyle(
+                    fontSize: 32,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
-          ],
-        ),
+          ),
+          Container(
+            width: 360,
+            height: 35,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+            child: const Padding(
+              padding: EdgeInsets.only(top: 6),
+              child: Text(
+                'Here your Playlist!',
+                style: TextStyle(
+                  color: Color(0XFF42579A),
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      offset: Offset(0, 3),
+                      color: Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: recommendedSongs.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(recommendedSongs[index]['title'],
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  subtitle: Text(recommendedSongs[index]['artist'],
+                      style: TextStyle(fontSize: 16)),
+                  leading:
+                      Image.network(recommendedSongs[index]['albumImgUrl']),
+                  // Aksi ketika item di klik (misalnya putar lagu, buka detail lagu, dll.)
+                  onTap: () {
+                    // Tambahkan logika untuk menangani aksi ketika lagu dipilih
+                    // Misalnya, putar lagu atau tampilkan detail lagu.
+                    // Sesuaikan dengan fitur aplikasi Anda.
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => SongPage(
+                                title: recommendedSongs[index]['title'],
+                                artist: recommendedSongs[index]['artist'],
+                                albumImgUrl: recommendedSongs[index]
+                                    ['albumImgUrl'],
+                                audioPath: recommendedSongs[index]
+                                    ['audioPath']))));
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

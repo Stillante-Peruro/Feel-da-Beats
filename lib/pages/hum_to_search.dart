@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter_acrcloud/flutter_acrcloud.dart';
-// import 'package:acr_cloud_sdk/acr_cloud_sdk.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-// import '../utils/music_visualizer.dart';
 
 class MusicPage extends StatefulWidget {
   const MusicPage({super.key});
@@ -48,10 +44,12 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _checkPermission();
+
     ACRCloud.setUp(const ACRCloudConfig(
         "bd5e3132a5d266920f2d0f05655093d3",
         "S8MDMZdLJs7fifE0OLYARSTlmV8Menk8IoCbZjDE",
         "identify-ap-southeast-1.acrcloud.com"));
+
     _controllers = List.generate(
       8,
       (index) => AnimationController(
@@ -91,12 +89,16 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
       _text = 'Tekan tombol micophone untuk mulai mendeteksi lagu';
       _loadingText = 'Putar, nyanyikan, atau senandungkan lagu';
     });
+
     for (var controller in _controllers) {
       controller.repeat(reverse: true);
     }
     _acrCloud = ACRCloud.startSession();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_success) {
+        _timer.cancel();
+      }
       if (timer.tick == 5) {
         setState(() {
           _loadingText = 'Teruskan';
@@ -111,6 +113,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
         setState(() {
           _text = 'Gagal Mendeteksi lagu, mohon coba lagi';
           _acrCloud.cancel();
+          _acrCloud.dispose;
           _stopRecording();
         });
       }
@@ -124,24 +127,27 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
         }
         _stopRecording();
         _acrCloud.cancel();
+        _acrCloud.dispose();
       });
       return;
     } else if (result.metadata == null) {
       setState(() {
+        _text = 'Gagal Mendeteksi lagu, mohon coba lagi';
         for (var controller in _controllers) {
           controller.animateBack(0.0);
         }
         _stopRecording();
         _acrCloud.cancel();
+        _acrCloud.dispose();
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Tidak dapat mengenali lagu'),
       ));
       return;
     }
-    setState(() {
-      music = result.metadata!.music.first;
-    });
+
+    music = result.metadata!.music.first;
+
     if (music != null) {
       setState(() {
         _stopRecording();
@@ -149,7 +155,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
       if (!_success) {
         setState(() {
           _success = true;
-          _acrCloud.cancel();
+          _acrCloud.dispose();
         });
         [
           print('Track: ${music!.title}\n'),
@@ -165,10 +171,11 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   }
 
   void _stopRecording() {
+    _acrCloud.cancel();
+    _acrCloud.dispose();
     setState(() {
       _isRecording = false;
     });
-    _acrCloud.cancel();
     _timer.cancel(); // Batalkan timer
     if (!_isRecording) {
       for (var controller in _controllers) {
@@ -368,6 +375,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
       controller.dispose();
     }
     _timer.cancel();
+    _acrCloud.cancel();
     _acrCloud.dispose();
     super.dispose();
   }

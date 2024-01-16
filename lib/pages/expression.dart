@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:feel_da_beats_app/utils/camera_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
@@ -28,7 +28,6 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  // String? _text;
   var _cameraLensDirection = CameraLensDirection.front;
   String emosi = 'Tidak Ada Wajah Terdeteksi';
   late Timer _redirectTimer;
@@ -36,10 +35,8 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   bool _gagalIdentifikasi = false;
   bool _timerAlreadyStarted = false;
   late Timer _faceDetectionTimer;
-  // bool _faceDetected = false;
   bool _timeRedirect = false;
   late InputImage gambarBaru;
-  // late Face wajahBaru;
   Directory? tempDir;
 
   @override
@@ -57,7 +54,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     _faceDetector.close();
     _redirectTimer.cancel();
     _faceDetectionTimer.cancel();
-    // _cleanUpResources();
+    _cleanUpResources();
     super.dispose();
   }
 
@@ -237,39 +234,25 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
-    // setState(() {
-    //   // _text = 'Hola';
-    // });
+
     final faces = await _faceDetector.processImage(inputImage);
 
     _isBusy = false;
 
-    // if (_faceDetected) {
     gambarBaru = inputImage;
-    // wajahBaru = faces.last;
-    // }
 
     if (mounted) {
       if (faces.isNotEmpty) {
-        print('ado rai');
         setState(() {
-          // if (!_faceDetected) {
-          // _faceDetected = true;
           emosi = 'Wajah Terdeteksi';
 
           _startFaceDetectionTimer(faces.first);
-
-          // }
         });
       } else {
         print('ktk rai');
         setState(() {
-          // if (_faceDetected) {
           emosi = 'Tidak Ada Wajah Terdeteksi';
-          // _faceDetected = false;
           _timeRedirect = false;
-          // _faceDetectionTimer.cancel();
-          // }
         });
       }
     }
