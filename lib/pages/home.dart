@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 20,
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.only(left: 16),
                   child: Text(
                     "New Songs",
                     style: TextStyle(
@@ -346,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 140,
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.only(left: 16),
                   child: Text(
                     "Your Playlist",
                     style: TextStyle(
@@ -398,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.only(left: 16),
                   child: Text(
                     "Your Music",
                     style: TextStyle(
