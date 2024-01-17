@@ -4,6 +4,7 @@ import 'package:feel_da_beats_app/pages/home.dart';
 import 'package:feel_da_beats_app/pages/expression.dart';
 import 'package:feel_da_beats_app/pages/profile.dart';
 import 'package:feel_da_beats_app/pages/hum_to_search.dart';
+import 'package:flutter/services.dart';
 
 class MyHomePage extends StatefulWidget {
   static String id = "dashboard";
@@ -28,8 +29,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Feel da Beats'),
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.white,
+            // statusBarIconBrightness: Brightness.dark,
+            // statusBarBrightness: Brightness.light,
+          ),
+        ),
       ),
       body: _getTabContent(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -48,47 +56,30 @@ class _MyHomePageState extends State<MyHomePage> {
             bottom: _isSearchActive ? 115 : 30,
             left: 0,
             right: 0,
-            child: Container(
-              height: 60,
-              width: MediaQuery.of(context).size.width, // Full width container
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      height: _isSearchActive
-                          ? _isEmoji
-                              ? 65
-                              : 50
-                          : 25,
-                      width: _isSearchActive
-                          ? _isEmoji
-                              ? 65
-                              : 50
-                          : 25,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xff3EECE1),
+            child: CircleAvatar(
+              radius: _isSearchActive ? (_isEmoji ? 30 : 25) : 5,
+              backgroundColor: const Color(0xff3EECE1),
+              child: AnimatedSize(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+                child: IconButton(
+                  icon: Icon(Icons.emoji_emotions, color: Colors.white),
+                  iconSize: _isSearchActive ? (_isEmoji ? 35 : 30) : 15,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ExpressionSearchPage(
+                          gagalIdentifikasi: false,
+                        ),
                       ),
-                      child: IconButton(
-                        icon: Icon(Icons.emoji_emotions, color: Colors.white),
-                        iconSize: _isSearchActive ? 30 : 15,
-                        onPressed: () {
-                          // Handle action for search icon
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ExpressionSearchPage(
-                                      gagalIdentifikasi: false,
-                                    )),
-                          );
-                          setState(() {
-                            _isSearchActive = !_isSearchActive;
-                          });
-                        },
-                      ),
-                    ),
-                  ]),
+                    );
+                    setState(() {
+                      _isSearchActive = !_isSearchActive;
+                    });
+                  },
+                ),
+              ),
             ),
           ),
           AnimatedPositioned(
@@ -97,96 +88,60 @@ class _MyHomePageState extends State<MyHomePage> {
             bottom: _isSearchActive ? 65 : 45,
             left: 0,
             right: _isSearchActive ? 160 : 30,
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: Container(
-                height: 50,
-                width:
-                    MediaQuery.of(context).size.width, // Full width container
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: _isSearchActive
-                            ? _isSearch
-                                ? 60
-                                : 50
-                            : 25,
-                        width: _isSearchActive
-                            ? _isSearch
-                                ? 60
-                                : 50
-                            : 25,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xff3EECE1),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.search, color: Colors.white),
-                          iconSize: _isSearchActive ? 30 : 15,
-                          onPressed: () {
-                            // Handle action for search icon
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()),
-                            );
-                            setState(() {
-                              _isSearchActive = !_isSearchActive;
-                            });
-                          },
-                        ),
+            child: CircleAvatar(
+              radius: _isSearchActive ? (_isSearch ? 30 : 25) : 5,
+              backgroundColor: const Color(0xff3EECE1),
+              child: AnimatedSize(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+                child: IconButton(
+                  icon: Icon(Icons.search, color: Colors.white),
+                  iconSize: _isSearchActive ? (_isSearch ? 35 : 30) : 15,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SearchPage(),
                       ),
-                    ]),
+                    );
+                    setState(() {
+                      _isSearchActive = !_isSearchActive;
+                    });
+                  },
+                ),
               ),
             ),
           ),
           AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              bottom: _isSearchActive ? 65 : 45,
-              left: _isSearchActive ? 160 : 30,
-              right: 0,
-              child: Container(
-                  height: 50,
-                  width:
-                      MediaQuery.of(context).size.width, // Full width container
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          height: _isSearchActive
-                              ? _isMusic
-                                  ? 65
-                                  : 50
-                              : 25,
-                          width: _isSearchActive
-                              ? _isMusic
-                                  ? 65
-                                  : 50
-                              : 25,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xff3EECE1),
-                          ),
-                          child: IconButton(
-                            icon: Icon(Icons.music_note, color: Colors.white),
-                            iconSize: _isSearchActive ? 30 : 15,
-                            onPressed: () {
-                              // Handle action for search icon
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MusicPage()),
-                              );
-                              setState(() {
-                                _isSearchActive = !_isSearchActive;
-                              });
-                            },
-                          ),
-                        ),
-                      ]))),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            bottom: _isSearchActive ? 65 : 45,
+            left: _isSearchActive ? 160 : 30,
+            right: 0,
+            child: CircleAvatar(
+              radius: _isSearchActive ? (_isMusic ? 30 : 25) : 5,
+              backgroundColor: const Color(0xff3EECE1),
+              child: AnimatedSize(
+                duration: Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+                child: IconButton(
+                  icon: Icon(Icons.music_note, color: Colors.white),
+                  iconSize: _isSearchActive ? (_isMusic ? 35 : 30) : 15,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MusicPage(),
+                      ),
+                    );
+                    setState(() {
+                      _isSearchActive = !_isSearchActive;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
           Positioned(
             bottom: _quickBallPositionY,
             left: 0,

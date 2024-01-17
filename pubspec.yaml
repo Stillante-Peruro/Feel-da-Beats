@@ -55,6 +55,7 @@ dependencies:
   permission_handler: ^10.4.5
   flutter_svg: ^2.0.9
   tflite_flutter: ^0.10.4
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
     - assets/model.tflite
     - assets/vector138.png
     - assets/vector139.png
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

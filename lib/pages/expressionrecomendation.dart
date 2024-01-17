@@ -134,18 +134,18 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
     }
   }
 
-  Color _emotionColor() {
+  AssetImage _emotionBackground() {
     switch (emotion) {
       case 'Happy':
-        return Colors.pinkAccent;
+        return const AssetImage("assets/images/Happy.png");
       case 'Sad':
-        return Colors.lightBlue;
+        return const AssetImage("assets/images/Sad.png");
       case 'Angry':
-        return Colors.red;
+        return const AssetImage("assets/images/Angry.png");
       case 'Neutral':
-        return Colors.lightGreen;
+        return const AssetImage("assets/images/Happy.png");
       default:
-        return Colors.white;
+        return const AssetImage("assets/images/Blank.png");
     }
   }
 
@@ -162,7 +162,9 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
             width: 370,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: _emotionColor()),
+                // color: _emotionColor()),
+                image: DecorationImage(
+                    image: _emotionBackground(), fit: BoxFit.cover)),
             child: Padding(
               padding: const EdgeInsets.only(left: 10, top: 15),
               child: Text(

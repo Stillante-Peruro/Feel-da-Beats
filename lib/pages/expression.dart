@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:feel_da_beats_app/utils/camera_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -19,7 +20,8 @@ class ExpressionSearchPage extends StatefulWidget {
   State<ExpressionSearchPage> createState() => _ExpressionSearchPageState();
 }
 
-class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
+class _ExpressionSearchPageState extends State<ExpressionSearchPage>
+    with WidgetsBindingObserver {
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
       performanceMode: FaceDetectorMode.accurate,
@@ -42,6 +44,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     if (widget.gagalIdentifikasi == false) {
       _startTimerToCancel();
     }
@@ -50,12 +53,24 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _canProcess = false;
     _faceDetector.close();
     _redirectTimer.cancel();
     _faceDetectionTimer.cancel();
     _cleanUpResources();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _cleanUpResources();
+    } else if (state == AppLifecycleState.resumed) {
+      if (_isPageSwitched && emosi == 'Wajah Terdeteksi') {
+        _saveFaceImage(gambarBaru);
+      }
+    }
   }
 
   Future<void> _cleanUpResources() async {
@@ -89,7 +104,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
         children: [
           const Center(
             child: Text(
-              'Feel Your Tone',
+              'Feel Your Expression',
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.bold,
@@ -168,8 +183,10 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.refresh,
-                                size: 100), // Icon reload besar
+                            icon: const Hero(
+                              tag: 'refresh_icon',
+                              child: Icon(Icons.refresh, size: 100),
+                            ),
                             onPressed: () {
                               setState(() {
                                 _gagalIdentifikasi = false;
@@ -235,26 +252,30 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
     if (_isBusy) return;
     _isBusy = true;
 
-    final faces = await _faceDetector.processImage(inputImage);
+    try {
+      final faces = await _faceDetector.processImage(inputImage);
 
-    _isBusy = false;
+      _isBusy = false;
 
-    gambarBaru = inputImage;
+      gambarBaru = inputImage;
 
-    if (mounted) {
-      if (faces.isNotEmpty) {
-        setState(() {
-          emosi = 'Wajah Terdeteksi';
-
-          _startFaceDetectionTimer(faces.first);
-        });
-      } else {
-        print('ktk rai');
-        setState(() {
-          emosi = 'Tidak Ada Wajah Terdeteksi';
-          _timeRedirect = false;
-        });
+      if (mounted) {
+        if (faces.isNotEmpty) {
+          setState(() {
+            emosi = 'Wajah Terdeteksi';
+            print('jalan');
+            _startFaceDetectionTimer(faces.first);
+          });
+        } else {
+          setState(() {
+            emosi = 'Tidak Ada Wajah Terdeteksi';
+            _timeRedirect = false;
+          });
+        }
       }
+    } catch (e) {
+      print('Error processing image: $e');
+      _isBusy = false;
     }
   }
 
@@ -266,6 +287,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
         if (timer.tick >= 3 && !imageSaved) {
           imageSaved = true;
           if (emosi == 'Wajah Terdeteksi') {
+            print('jalan1');
             _saveFaceImage(gambarBaru);
             timer.cancel();
           }
@@ -275,10 +297,11 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
   }
 
   Future<void> _saveFaceImage(InputImage inputImage) async {
-    final image = decodeYUV420SP(inputImage);
-
-    if (!_isPageSwitched) {
-      try {
+    try {
+      print('jalan2');
+      final image = decodeYUV420SP(inputImage);
+      print('jalan3');
+      if (!_isPageSwitched) {
         tempDir = await getTemporaryDirectory();
         String filePath = '${tempDir!.path}/face_image.jpg';
         File(filePath).writeAsBytesSync(img.encodeJpg(image));
@@ -291,9 +314,9 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage> {
             ),
           );
         });
-      } catch (e) {
-        print('Error saving face image: $e');
       }
+    } catch (e) {
+      print('Error saving face image: $e');
     }
   }
 

@@ -25,7 +25,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   // final List<int> durasi = [500, 800, 600, 700, 900];
   int _generateRandomDuration() {
     final random = Random();
-    return random.nextInt(400) + 500;
+    return random.nextInt(400) + 400;
   }
 
   Future<void> _requestMicrophonePermission() async {
