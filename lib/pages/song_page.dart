@@ -107,6 +107,7 @@ class _SongPageState extends State<SongPage> {
                   ),
                 ],
               ),
+
               SizedBox(height: 30),
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
@@ -161,6 +162,8 @@ class _SongPageState extends State<SongPage> {
                             isnLiked = true;
                             print('disukai' + " ${isnLiked}");
                           }
+
+                          setState(() {});
                         },
                         child: Icon(
                           isnLiked
