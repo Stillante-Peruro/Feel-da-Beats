@@ -100,11 +100,14 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              GestureDetector(
-                child: const Icon(Icons.arrow_back),
-                onTap: () {
-                  Navigator.pop(context);
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: GestureDetector(
+                  child: const Icon(Icons.arrow_back),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
               const SizedBox(height: 10),
               TextField(

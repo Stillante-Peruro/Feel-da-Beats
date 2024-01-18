@@ -1,6 +1,6 @@
 import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/landing_page.dart';
-import 'package:feel_da_beats_app/services/userManagement.dart';
+import 'package:feel_da_beats_app/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -157,7 +157,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               }
                             }
                             print(FirebaseAuth.instance.currentUser?.uid);
-                            userManagement().saveUserDataToFirestore(
+                            UserManagement().saveUserDataToFirestore(
                                 FirebaseAuth.instance.currentUser!.uid,
                                 email,
                                 username);

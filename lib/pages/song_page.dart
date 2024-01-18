@@ -7,7 +7,7 @@ class SongPage extends StatefulWidget {
   final String albumImgUrl;
   final String audioPath;
 
-  SongPage(
+  const SongPage(
       {super.key,
       required this.title,
       required this.artist,
@@ -68,11 +68,11 @@ class _SongPageState extends State<SongPage> {
     if (isPlaying) {
       _audioPlayer.pause();
       isPlaying = false;
-      print('music paused');
+      // print('music paused');
     } else {
       _audioPlayer.play(UrlSource(url));
       print('playing music..');
-      isPlaying = true;
+      // isPlaying = true;
     }
     setState(() {});
   }
@@ -92,180 +92,174 @@ class _SongPageState extends State<SongPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    child: Icon(Icons.arrow_back),
-                    onTap: () {
-                      print("back");
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  child: Image.network(
-                    widget.albumImgUrl,
-                    width: 325,
-                    height: 325,
-                    fit: BoxFit.cover,
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  child: const Icon(Icons.arrow_back),
+                  onTap: () {
+                    print("back");
+                    Navigator.pop(context);
+                  },
                 ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                widget.albumImgUrl,
+                width: 325,
+                height: 325,
+                fit: BoxFit.cover,
               ),
-              SizedBox(height: 20),
-              Container(
-                width: double.tryParse('325'),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(99, 124, 178, 1),
-                            shadows: [
-                              Shadow(
-                                  offset: Offset(0, 4),
-                                  color: Color.fromRGBO(0, 0, 0, 0.4),
-                                  blurRadius: 4)
-                            ],
-                          ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.tryParse('325'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(99, 124, 178, 1),
+                          shadows: [
+                            Shadow(
+                                offset: Offset(0, 4),
+                                color: Color.fromRGBO(0, 0, 0, 0.4),
+                                blurRadius: 4)
+                          ],
                         ),
-                        SizedBox(height: 5),
-                        Text(widget.artist,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Poppins',
-                              color: Color.fromRGBO(132, 123, 123, 1),
-                            )),
-                      ],
-                    ),
-                    InkWell(
-                        onTap: () {
-                          if (isnLiked) {
-                            isnLiked = false;
-                            print('tidak disukai' + ' ${isnLiked}');
-                          } else {
-                            isnLiked = true;
-                            print('disukai' + " ${isnLiked}");
-                          }
-                        },
-                        child: Icon(
-                          isnLiked
-                              ? Icons.favorite
-                              : Icons.favorite_border_outlined,
-                          color: Color.fromRGBO(62, 182, 236, 1),
-                          size: 35,
-                        ))
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: double.tryParse('350'),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text(
-                    formatDuration(_position),
-                    style: TextStyle(
-                        color: Color.fromRGBO(62, 182, 236, 1),
-                        fontFamily: 'Poppins',
-                        fontSize: 16),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(widget.artist,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            color: Color.fromRGBO(132, 123, 123, 1),
+                          )),
+                    ],
                   ),
-                  SizedBox(height: 100),
-                  Container(
-                    width: 267,
-                    child: Slider(
-                      value: _position.inSeconds.toDouble(),
-                      onChanged: (value) async {
-                        await _audioPlayer
-                            .seek(Duration(seconds: value.toInt()));
-                        setState(() {});
+                  InkWell(
+                      onTap: () {
+                        if (isnLiked) {
+                          isnLiked = false;
+                          print('tidak disukai $isnLiked');
+                        } else {
+                          isnLiked = true;
+                          print('disukai $isnLiked');
+                        }
                       },
-                      min: 0,
-                      max: _duration.inSeconds.toDouble(),
-                      inactiveColor: Color.fromRGBO(230, 224, 233, 1),
-                      activeColor: Color.fromRGBO(62, 182, 236, 1),
-                    ),
-                  ),
-                  Text(
-                    formatDuration(_duration),
-                    style: TextStyle(
-                        color: Color.fromRGBO(62, 182, 236, 1),
-                        fontFamily: 'Poppins',
-                        fontSize: 16),
-                  ),
-                ]),
-              ),
-              // SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.repeat,
-                      color: Color.fromRGBO(62, 182, 236, 1),
-                      size: 30,
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  InkWell(
-                    onTap: () {
-                      _audioPlayer
-                          .seek(Duration(seconds: _position.inSeconds - 10));
-                      setState(() {});
-                    },
-                    child: Icon(
-                      Icons.skip_previous_outlined,
-                      color: Color.fromRGBO(62, 182, 236, 1),
-                      size: 50,
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  InkWell(
-                    onTap: playPause,
-                    child: Icon(
-                      isPlaying ? Icons.pause_circle : Icons.play_circle,
-                      color: Color.fromRGBO(62, 182, 236, 1),
-                      size: 75,
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  InkWell(
-                    onTap: () {
-                      _audioPlayer
-                          .seek(Duration(seconds: _position.inSeconds + 10));
-                      setState(() {});
-                    },
-                    child: Icon(Icons.skip_next_outlined,
-                        color: Color.fromRGBO(62, 182, 236, 1), size: 50),
-                  ),
-                  SizedBox(width: 20),
-                  InkWell(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.playlist_play,
-                      color: Color.fromRGBO(62, 182, 236, 1),
-                      size: 30,
-                    ),
-                  ),
+                      child: Icon(
+                        isnLiked
+                            ? Icons.favorite
+                            : Icons.favorite_border_outlined,
+                        color: const Color.fromRGBO(62, 182, 236, 1),
+                        size: 35,
+                      ))
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.tryParse('350'),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  formatDuration(_position),
+                  style: const TextStyle(
+                      color: Color.fromRGBO(62, 182, 236, 1),
+                      fontFamily: 'Poppins',
+                      fontSize: 16),
+                ),
+                const SizedBox(height: 100),
+                SizedBox(
+                  width: 267,
+                  child: Slider(
+                    value: _position.inSeconds.toDouble(),
+                    onChanged: (value) async {
+                      await _audioPlayer.seek(Duration(seconds: value.toInt()));
+                      setState(() {});
+                    },
+                    min: 0,
+                    max: _duration.inSeconds.toDouble(),
+                    inactiveColor: const Color.fromRGBO(230, 224, 233, 1),
+                    activeColor: const Color.fromRGBO(62, 182, 236, 1),
+                  ),
+                ),
+                Text(
+                  formatDuration(_duration),
+                  style: const TextStyle(
+                      color: Color.fromRGBO(62, 182, 236, 1),
+                      fontFamily: 'Poppins',
+                      fontSize: 16),
+                ),
+              ]),
+            ),
+            // SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {},
+                  child: const Icon(
+                    Icons.repeat,
+                    color: Color.fromRGBO(62, 182, 236, 1),
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                InkWell(
+                  onTap: () {
+                    _audioPlayer
+                        .seek(Duration(seconds: _position.inSeconds - 10));
+                    setState(() {});
+                  },
+                  child: const Icon(
+                    Icons.skip_previous_outlined,
+                    color: Color.fromRGBO(62, 182, 236, 1),
+                    size: 50,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                InkWell(
+                  onTap: playPause,
+                  child: Icon(
+                    isPlaying ? Icons.pause_circle : Icons.play_circle,
+                    color: const Color.fromRGBO(62, 182, 236, 1),
+                    size: 75,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                InkWell(
+                  onTap: () {
+                    _audioPlayer
+                        .seek(Duration(seconds: _position.inSeconds + 10));
+                    setState(() {});
+                  },
+                  child: const Icon(Icons.skip_next_outlined,
+                      color: Color.fromRGBO(62, 182, 236, 1), size: 50),
+                ),
+                const SizedBox(width: 20),
+                InkWell(
+                  onTap: () {},
+                  child: const Icon(
+                    Icons.playlist_play,
+                    color: Color.fromRGBO(62, 182, 236, 1),
+                    size: 30,
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );

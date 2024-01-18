@@ -143,7 +143,7 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
       case 'Angry':
         return const AssetImage("assets/images/Angry.png");
       case 'Neutral':
-        return const AssetImage("assets/images/Happy.png");
+        return const AssetImage("assets/images/Neutral.png");
       default:
         return const AssetImage("assets/images/Blank.png");
     }
@@ -212,14 +212,11 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
                           fontSize: 16, fontWeight: FontWeight.bold)),
                   subtitle: Text(recommendedSongs[index]['artist'],
                       style: const TextStyle(fontSize: 16)),
-                  leading:
-                      Image.network(recommendedSongs[index]['albumImgUrl']),
-                  // Aksi ketika item di klik (misalnya putar lagu, buka detail lagu, dll.)
+                  leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                          recommendedSongs[index]['albumImgUrl'])),
                   onTap: () {
-                    // Tambahkan logika untuk menangani aksi ketika lagu dipilih
-                    // Misalnya, putar lagu atau tampilkan detail lagu.
-                    // Sesuaikan dengan fitur aplikasi Anda.
-
                     Navigator.push(
                         context,
                         MaterialPageRoute(

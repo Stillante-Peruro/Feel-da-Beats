@@ -5,18 +5,20 @@ import 'package:feel_da_beats_app/pages/landing_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class userManagement {
+class UserManagement {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Widget handleAuth() {
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           } else {
             if (snapshot.hasData) {
-              return MyHomePage();
+              return const MyHomePage();
             } else {
-              return LoginPage();
+              return const LoginPage();
             }
           }
         }));
@@ -38,6 +40,17 @@ class userManagement {
     });
   }
 
+  Future<String?> getUsername(String userId) async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userId).get();
+      return userDoc['username'];
+    } catch (e) {
+      print('Error getting username: $e');
+      return null;
+    }
+  }
+
   Future<String> getUserRole(String uid) async {
     DocumentSnapshot snapshot =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -46,13 +59,13 @@ class userManagement {
 
   void navigateBasedOnRole(BuildContext context) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-      String role = await getUserRole(uid);
-      if (role == 'admin') {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => adminOnlyPage()));
-      } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MyHomePage()));
-      }
+    String role = await getUserRole(uid);
+    if (role == 'admin') {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const AdminOnlyPage()));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+    }
   }
 }

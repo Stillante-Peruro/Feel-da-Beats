@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:feel_da_beats_app/utils/camera_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,8 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
+
+import '../services/usermanagement.dart';
 
 class ExpressionSearchPage extends StatefulWidget {
   final bool gagalIdentifikasi;
@@ -40,6 +43,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
   bool _timeRedirect = false;
   late InputImage gambarBaru;
   Directory? tempDir;
+  String uid = '';
 
   @override
   void initState() {
@@ -48,6 +52,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
     if (widget.gagalIdentifikasi == false) {
       _startTimerToCancel();
     }
+    _loadUsername();
     _faceDetectionTimer = Timer(const Duration(seconds: 0), () {});
   }
 
@@ -69,6 +74,18 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
     } else if (state == AppLifecycleState.resumed) {
       if (_isPageSwitched && emosi == 'Wajah Terdeteksi') {
         _saveFaceImage(gambarBaru);
+      }
+    }
+  }
+
+  Future<void> _loadUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String? username = await UserManagement().getUsername(user.uid);
+      if (username != null) {
+        setState(() {
+          uid = username;
+        });
       }
     }
   }
@@ -113,18 +130,18 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
                 shadows: [
                   Shadow(
                     blurRadius: 4,
-                    offset: Offset(0, 3),
+                    offset: Offset(0, 2),
                     color: Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 ],
               ),
             ),
           ),
-          const Center(
+          Center(
             child: Text(
-              'Welcome! User',
+              'Welcome! $uid',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.bold,
                 fontSize: 36,
@@ -263,7 +280,6 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
         if (faces.isNotEmpty) {
           setState(() {
             emosi = 'Wajah Terdeteksi';
-            print('jalan');
             _startFaceDetectionTimer(faces.first);
           });
         } else {
@@ -287,7 +303,6 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
         if (timer.tick >= 3 && !imageSaved) {
           imageSaved = true;
           if (emosi == 'Wajah Terdeteksi') {
-            print('jalan1');
             _saveFaceImage(gambarBaru);
             timer.cancel();
           }
@@ -298,9 +313,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
 
   Future<void> _saveFaceImage(InputImage inputImage) async {
     try {
-      print('jalan2');
       final image = decodeYUV420SP(inputImage);
-      print('jalan3');
       if (!_isPageSwitched) {
         tempDir = await getTemporaryDirectory();
         String filePath = '${tempDir!.path}/face_image.jpg';

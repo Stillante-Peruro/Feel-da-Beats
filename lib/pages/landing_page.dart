@@ -1,6 +1,5 @@
-// import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/pages/register.dart';
-import 'package:feel_da_beats_app/services/userManagement.dart';
+import 'package:feel_da_beats_app/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -24,26 +23,19 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        // appBar: AppBar(
-        //   title: Text('Feel da beats'),
-        // ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/vector138.png'),
                 fit: BoxFit.fitWidth,
-                alignment: Alignment.topCenter
-                // Atur properti lain sesuai kebutuhan
-                ),
+                alignment: Alignment.topCenter),
           ),
           child: Container(
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('assets/vector139.png'),
                     fit: BoxFit.fitWidth,
-                    alignment: Alignment.bottomCenter
-                    // Atur properti lain sesuai kebutuhan
-                    )),
+                    alignment: Alignment.bottomCenter)),
             child: Column(
               children: [
                 const SizedBox(height: 75),
@@ -116,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                                   showSpinner = false;
                                 });
                               });
-                              userManagement().navigateBasedOnRole(context);
+                              UserManagement().navigateBasedOnRole(context);
                             } catch (e) {
                               print(e);
                               if (e is FirebaseAuthException) {
@@ -128,8 +120,6 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             }
                           },
-                          child: const Text('Login',
-                              style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   const Color.fromRGBO(66, 87, 154, 1),
@@ -140,6 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                               side: const BorderSide(
                                   width: 3,
                                   color: Color.fromRGBO(103, 80, 163, 1))),
+                          child: const Text('Login',
+                              style: TextStyle(color: Colors.white)),
                         ),
                         const SizedBox(height: 180),
                         const Text("Don't have an account?",

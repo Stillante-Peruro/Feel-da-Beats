@@ -45,7 +45,7 @@ class SongNotFound extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Text(
               'Sayangnya lagu tersebut belum tersedia di aplikasi ini. Mohon tunggu update kedepannya untuk menampilkan lagu yang anda inginkan',
               textAlign: TextAlign.center,

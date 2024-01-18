@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/pages/song_not_found.dart';
 import 'package:feel_da_beats_app/pages/song_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_acrcloud/flutter_acrcloud.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../services/usermanagement.dart';
 
 class MusicPage extends StatefulWidget {
   const MusicPage({super.key});
@@ -25,6 +28,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   late Timer _timer;
   late ACRCloudSession _acrCloud;
   List songData = [];
+  String uid = '';
 
   getSongsData() async {
     var data = await FirebaseFirestore.instance
@@ -35,6 +39,18 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
     setState(() {
       songData = data.docs;
     });
+  }
+
+  Future<void> _loadUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String? username = await UserManagement().getUsername(user.uid);
+      if (username != null) {
+        setState(() {
+          uid = username;
+        });
+      }
+    }
   }
 
   // final List<int> durasi = [500, 800, 600, 700, 900];
@@ -59,6 +75,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _checkPermission();
+    _loadUsername();
     getSongsData();
 
     ACRCloud.setUp(const ACRCloudConfig(
@@ -156,9 +173,6 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
         _acrCloud.cancel();
         _acrCloud.dispose();
       });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Tidak dapat mengenali lagu'),
-      ));
       return;
     }
 
@@ -175,15 +189,6 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
           _acrCloud.cancel();
         });
         checkAndNavigate();
-        // [
-        //   print('Track: ${music!.title}\n'),
-        //   print('Album: ${music!.album.name}\n'),
-        //   print('Artist: ${music!.artists.first.name}\n')
-        // ];
-        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        //   content: Text(
-        //       'Berhasil mengenali lagu: ${music!.title} by Artist: ${music!.artists.first.name}'),
-        // ));
       }
     }
   }
@@ -194,12 +199,9 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
     for (var song in songData) {
       var title = song['title'].toString();
       var artist = song['artist'].toString();
-      print("Title: $title, Artist: $artist");
       if (music!.title == title ||
           music!.artists.first.name == artist ||
           music!.album.name == artist) {
-        print(
-            'Match found - Title: ${song['title']}, Artist: ${song['artist']}');
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -217,7 +219,6 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
     }
 
     if (!songFound) {
-      print('No match found. Redirecting to SongNotFound.');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -274,18 +275,18 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
                 shadows: [
                   Shadow(
                     blurRadius: 4,
-                    offset: Offset(0, 3),
+                    offset: Offset(0, 2),
                     color: Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 ],
               ),
             ),
           ),
-          const Center(
+          Center(
             child: Text(
-              'Welcome! User',
+              "Welcome! $uid",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.bold,
                 fontSize: 36,

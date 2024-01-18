@@ -87,7 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     getSongsScream();
 
-    _searchController.addListener(_onSearchChanged);
+    // _searchController.addListener(_onSearchChanged);
+
     // Firebase.initializeApp().whenComplete(() {});
     // getSongsData();
   }
@@ -98,27 +99,27 @@ class _HomeScreenState extends State<HomeScreen> {
   //   super.didChangeDependencies();
   // }
 
-  _onSearchChanged() {
-    searchResultList();
-  }
+  // _onSearchChanged() {
+  //   searchResultList();
+  // }
 
-  searchResultList() {
-    var showResults = [];
-    if (_searchController.text != "") {
-      for (var songsSnapshot in _allResults) {
-        var title = songsSnapshot['title'].toString().toLowerCase();
-        if (title.contains(_searchController.text.toLowerCase())) {
-          showResults.add(songsSnapshot);
-        }
-      }
-    } else {
-      showResults = List.from(_allResults);
-    }
+  // searchResultList() {
+  //   var showResults = [];
+  //   if (_searchController.text != "") {
+  //     for (var songsSnapshot in _allResults) {
+  //       var title = songsSnapshot['title'].toString().toLowerCase();
+  //       if (title.contains(_searchController.text.toLowerCase())) {
+  //         showResults.add(songsSnapshot);
+  //       }
+  //     }
+  //   } else {
+  //     showResults = List.from(_allResults);
+  //   }
 
-    // setState(() {
-    //   _resultList = showResults;
-    // });
-  }
+  // setState(() {
+  //   _resultList = showResults;
+  // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -194,8 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontWeight: FontWeight.bold,
                                     shadows: [
                                       Shadow(
-                                        blurRadius: 4,
-                                        offset: Offset(0, 3),
+                                        blurRadius: 3,
+                                        offset: Offset(0, 2),
                                         color: Color.fromRGBO(0, 0, 0, 0.4),
                                       ),
                                     ]),
@@ -242,8 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontWeight: FontWeight.bold,
                                     shadows: [
                                       Shadow(
-                                        blurRadius: 4,
-                                        offset: Offset(0, 3),
+                                        blurRadius: 3,
+                                        offset: Offset(0, 2),
                                         color: Color.fromRGBO(0, 0, 0, 0.4),
                                       ),
                                     ]),
@@ -395,8 +396,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
-                          blurRadius: 4,
-                          offset: Offset(0, 3),
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
                           color: Color.fromRGBO(0, 0, 0, 0.4),
                         ),
                       ],
@@ -443,6 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fit: BoxFit.cover,
                                           ),
                                         )),
+                                    const SizedBox(height: 2),
                                     Text(
                                       _allResults[index]['title'],
                                       textAlign: TextAlign.center,
@@ -453,14 +455,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontWeight: FontWeight.bold,
                                         shadows: [
                                           Shadow(
-                                            blurRadius: 4,
-                                            offset: Offset(0, 3),
+                                            blurRadius: 3,
+                                            offset: Offset(0, 1.5),
                                             color: Color.fromRGBO(0, 0, 0, 0.4),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 2),
                                     Text(
                                       _allResults[index]['artist'],
                                       textAlign: TextAlign.center,
@@ -529,8 +531,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
-                          blurRadius: 4,
-                          offset: Offset(0, 3),
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
                           color: Color.fromRGBO(0, 0, 0, 0.4),
                         ),
                       ],
@@ -581,8 +583,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
-                          blurRadius: 4,
-                          offset: Offset(0, 3),
+                          blurRadius: 3,
+                          offset: Offset(0, 2),
                           color: Color.fromRGBO(0, 0, 0, 0.4),
                         ),
                       ],

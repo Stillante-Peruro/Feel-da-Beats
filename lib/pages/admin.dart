@@ -3,14 +3,14 @@ import 'package:feel_da_beats_app/pages/dashboard.dart';
 import 'package:feel_da_beats_app/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
-class adminOnlyPage extends StatefulWidget {
-  const adminOnlyPage({super.key});
+class AdminOnlyPage extends StatefulWidget {
+  const AdminOnlyPage({super.key});
 
   @override
-  State<adminOnlyPage> createState() => _adminOnlyPageState();
+  State<AdminOnlyPage> createState() => _AdminOnlyPageState();
 }
 
-class _adminOnlyPageState extends State<adminOnlyPage> {
+class _AdminOnlyPageState extends State<AdminOnlyPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController artistController = TextEditingController();
   TextEditingController albumController = TextEditingController();
