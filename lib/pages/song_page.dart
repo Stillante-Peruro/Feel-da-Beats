@@ -20,6 +20,7 @@ class SongPage extends StatefulWidget {
 
 class _SongPageState extends State<SongPage> {
   bool isPlaying = false;
+  bool isnLiked = false;
   late final AudioPlayer _audioPlayer;
   String url = "";
 
@@ -89,64 +90,156 @@ class _SongPageState extends State<SongPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Now Playing'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Center(
+        child: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(
-                widget.albumImgUrl,
-                width: 200,
-                height: 200,
+              Row(
+                children: [
+                  GestureDetector(
+                    child: Icon(Icons.arrow_back),
+                    onTap: () {
+                      print("back");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  child: Image.network(
+                    widget.albumImgUrl,
+                    width: 325,
+                    height: 325,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
-              Text(
-                widget.title,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Container(
+                width: double.tryParse('325'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(99, 124, 178, 1),
+                            shadows: [
+                              Shadow(
+                                  offset: Offset(0, 4),
+                                  color: Color.fromRGBO(0, 0, 0, 0.4),
+                                  blurRadius: 4)
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(widget.artist,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                              color: Color.fromRGBO(132, 123, 123, 1),
+                            )),
+                      ],
+                    ),
+                    InkWell(
+                        onTap: () {
+                          if (isnLiked) {
+                            isnLiked = false;
+                            print('tidak disukai' + ' ${isnLiked}');
+                          } else {
+                            isnLiked = true;
+                            print('disukai' + " ${isnLiked}");
+                          }
+                        },
+                        child: Icon(
+                          isnLiked
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          color: Color.fromRGBO(62, 182, 236, 1),
+                          size: 35,
+                        ))
+                  ],
+                ),
               ),
-              Text(
-                widget.artist,
-                style: TextStyle(fontSize: 18),
+              SizedBox(height: 20),
+              Container(
+                width: double.tryParse('350'),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                  Text(
+                    formatDuration(_position),
+                    style: TextStyle(
+                        color: Color.fromRGBO(62, 182, 236, 1),
+                        fontFamily: 'Poppins',
+                        fontSize: 16),
+                  ),
+                  SizedBox(height: 100),
+                  Container(
+                    width: 267,
+                    child: Slider(
+                      value: _position.inSeconds.toDouble(),
+                      onChanged: (value) async {
+                        await _audioPlayer
+                            .seek(Duration(seconds: value.toInt()));
+                        setState(() {});
+                      },
+                      min: 0,
+                      max: _duration.inSeconds.toDouble(),
+                      inactiveColor: Color.fromRGBO(230, 224, 233, 1),
+                      activeColor: Color.fromRGBO(62, 182, 236, 1),
+                    ),
+                  ),
+                  Text(
+                    formatDuration(_duration),
+                    style: TextStyle(
+                        color: Color.fromRGBO(62, 182, 236, 1),
+                        fontFamily: 'Poppins',
+                        fontSize: 16),
+                  ),
+                ]),
               ),
-              SizedBox(height: 45),
-              Slider(
-                value: _position.inSeconds.toDouble(),
-                onChanged: (value) async {
-                  await _audioPlayer.seek(Duration(seconds: value.toInt()));
-                  setState(() {});
-                },
-                min: 0,
-                max: _duration.inSeconds.toDouble(),
-                inactiveColor: Colors.grey[600],
-                activeColor: Colors.cyan,
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(formatDuration(_position) +
-                    '/' +
-                    formatDuration(_duration)),
-              ]),
-              SizedBox(height: 30),
+              // SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  InkWell(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.repeat,
+                      color: Color.fromRGBO(62, 182, 236, 1),
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(width: 20),
                   InkWell(
                     onTap: () {
                       _audioPlayer
                           .seek(Duration(seconds: _position.inSeconds - 10));
                       setState(() {});
                     },
-                    child: Icon(Icons.fast_rewind),
+                    child: Icon(
+                      Icons.skip_previous_outlined,
+                      color: Color.fromRGBO(62, 182, 236, 1),
+                      size: 50,
+                    ),
                   ),
                   SizedBox(width: 20),
                   InkWell(
                     onTap: playPause,
                     child: Icon(
                       isPlaying ? Icons.pause_circle : Icons.play_circle,
-                      color: Colors.cyan,
+                      color: Color.fromRGBO(62, 182, 236, 1),
                       size: 75,
                     ),
                   ),
@@ -157,8 +250,16 @@ class _SongPageState extends State<SongPage> {
                           .seek(Duration(seconds: _position.inSeconds + 10));
                       setState(() {});
                     },
+                    child: Icon(Icons.skip_next_outlined,
+                        color: Color.fromRGBO(62, 182, 236, 1), size: 50),
+                  ),
+                  SizedBox(width: 20),
+                  InkWell(
+                    onTap: () {},
                     child: Icon(
-                      Icons.fast_forward,
+                      Icons.playlist_play,
+                      color: Color.fromRGBO(62, 182, 236, 1),
+                      size: 30,
                     ),
                   ),
                 ],
