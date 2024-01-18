@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:feel_da_beats_app/pages/song_not_found.dart';
+import 'package:feel_da_beats_app/pages/song_page.dart';
 import 'package:flutter_acrcloud/flutter_acrcloud.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,6 +24,18 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   String _loadingText = 'Putar, nyanyikan, atau senandungkan lagu';
   late Timer _timer;
   late ACRCloudSession _acrCloud;
+  List songData = [];
+
+  getSongsData() async {
+    var data = await FirebaseFirestore.instance
+        .collection('songs')
+        .orderBy('title')
+        .get();
+
+    setState(() {
+      songData = data.docs;
+    });
+  }
 
   // final List<int> durasi = [500, 800, 600, 700, 900];
   int _generateRandomDuration() {
@@ -44,6 +59,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _checkPermission();
+    getSongsData();
 
     ACRCloud.setUp(const ACRCloudConfig(
         "bd5e3132a5d266920f2d0f05655093d3",
@@ -156,17 +172,62 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
         setState(() {
           _success = true;
           _acrCloud.dispose();
+          _acrCloud.cancel();
         });
-        [
-          print('Track: ${music!.title}\n'),
-          print('Album: ${music!.album.name}\n'),
-          print('Artist: ${music!.artists.first.name}\n')
-        ];
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'Berhasil mengenali lagu: ${music!.title} by Artist: ${music!.artists.first.name}'),
-        ));
+        checkAndNavigate();
+        // [
+        //   print('Track: ${music!.title}\n'),
+        //   print('Album: ${music!.album.name}\n'),
+        //   print('Artist: ${music!.artists.first.name}\n')
+        // ];
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text(
+        //       'Berhasil mengenali lagu: ${music!.title} by Artist: ${music!.artists.first.name}'),
+        // ));
       }
+    }
+  }
+
+  void checkAndNavigate() {
+    bool songFound = false;
+
+    for (var song in songData) {
+      var title = song['title'].toString();
+      var artist = song['artist'].toString();
+      print("Title: $title, Artist: $artist");
+      if (music!.title == title ||
+          music!.artists.first.name == artist ||
+          music!.album.name == artist) {
+        print(
+            'Match found - Title: ${song['title']}, Artist: ${song['artist']}');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SongPage(
+              title: song['title'],
+              artist: song['artist'],
+              albumImgUrl: song['albumImgUrl'],
+              audioPath: song['audioPath'],
+            ),
+          ),
+        );
+        songFound = true;
+        break;
+      }
+    }
+
+    if (!songFound) {
+      print('No match found. Redirecting to SongNotFound.');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SongNotFound(
+            title: music!.title,
+            artist: music!.artists.first.name,
+            album: music!.album.name,
+          ),
+        ),
+      );
     }
   }
 
