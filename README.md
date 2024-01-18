@@ -9,4 +9,4 @@ Nama Anggota:
 3. Muhammad Arief Pratama (Hacker)
 4. RA. Nur Afifah Widyadhana (Hacker)
 
-Deskripsi Produk: Sebuah Aplikasi musik yang memiliki fitur unik yang dapat memudahkan kita untuk mencari lagu dan fitur unik lainnya.
+Deskripsi Produk: Sebuah Aplikasi musik yang memiliki fitur unik yang dapat memudahkan kita untuk mencari lagu seperti scan by expression, hum to search, dan fitur unik lainnya.
