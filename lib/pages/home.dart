@@ -1,10 +1,13 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/pages/expression.dart';
 import 'package:feel_da_beats_app/pages/hum_to_search.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'song_page.dart';
 // import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,6 +24,20 @@ class _HomeScreenState extends State<HomeScreen> {
   //   }
   //   print('all songs added');
   // }
+  List songData = [];
+
+  getSongsData() async {
+    var data = await FirebaseFirestore.instance
+        .collection('songs')
+        .orderBy('title')
+        .get();
+
+    setState(() {
+      songData = data.docs;
+    });
+    print('song added!!');
+  }
+
   List trendingHeader = [
     {"id": 1, "image_path": "assets/images/th(1).png"},
     {"id": 2, "image_path": "assets/images/th(2).png"},
@@ -52,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Firebase.initializeApp().whenComplete(() {
       print("completed");
     });
+    getSongsData();
     super.initState();
   }
 
@@ -344,7 +362,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(
                   height: 140,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: songData.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.all(
+                            8.0), 
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: GestureDetector(
+                            onTap: () {
+                              print('clicked');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SongPage(
+                                    title: songData[index]['title'],
+                                    artist: songData[index]['artist'],
+                                    albumImgUrl: songData[index]['albumImgUrl'],
+                                    audioPath: songData[index]['audioPath'],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              child: Image.network(
+                                songData[index]['albumImgUrl'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
+
                 const Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Text(
