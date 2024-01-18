@@ -25,10 +25,17 @@ class _MyHomePageState extends State<MyHomePage> {
   double _lastDragPositionX = 0;
   double _iconStartPositionY = 0;
   double _lastDragPositionY = 0;
+  bool? resizeToAvoidBottomInset;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: Size.zero,
         child: AppBar(
@@ -60,11 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
               radius: _isSearchActive ? (_isEmoji ? 30 : 25) : 5,
               backgroundColor: const Color(0xff3EECE1),
               child: AnimatedSize(
-                duration: Duration(milliseconds: 100),
+                duration: const Duration(milliseconds: 100),
                 curve: Curves.easeInOut,
                 child: IconButton(
-                  icon: Icon(Icons.emoji_emotions, color: Colors.white),
-                  iconSize: _isSearchActive ? (_isEmoji ? 35 : 30) : 15,
+                  icon: const Icon(Icons.emoji_emotions, color: Colors.white),
+                  iconSize: _isSearchActive ? (_isEmoji ? 35 : 30) : 1,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -92,10 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
               radius: _isSearchActive ? (_isSearch ? 30 : 25) : 5,
               backgroundColor: const Color(0xff3EECE1),
               child: AnimatedSize(
-                duration: Duration(milliseconds: 100),
+                duration: const Duration(milliseconds: 100),
                 curve: Curves.easeInOut,
                 child: IconButton(
-                  icon: Icon(Icons.search, color: Colors.white),
+                  icon: const Icon(Icons.search, color: Colors.white),
                   iconSize: _isSearchActive ? (_isSearch ? 35 : 30) : 15,
                   onPressed: () {
                     Navigator.push(
@@ -122,10 +129,10 @@ class _MyHomePageState extends State<MyHomePage> {
               radius: _isSearchActive ? (_isMusic ? 30 : 25) : 5,
               backgroundColor: const Color(0xff3EECE1),
               child: AnimatedSize(
-                duration: Duration(milliseconds: 100),
+                duration: const Duration(milliseconds: 100),
                 curve: Curves.easeInOut,
                 child: IconButton(
-                  icon: Icon(Icons.music_note, color: Colors.white),
+                  icon: const Icon(Icons.music_note, color: Colors.white),
                   iconSize: _isSearchActive ? (_isMusic ? 35 : 30) : 15,
                   onPressed: () {
                     Navigator.push(
@@ -207,7 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         _lastDragPositionY < _iconStartPositionY) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SearchPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SearchPage()),
                       );
                     } else if (_lastDragPositionY < _iconStartPositionY - 50 &&
                         _lastDragPositionX - 50 < _iconStartPositionX &&
@@ -215,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ExpressionSearchPage(
+                            builder: (context) => const ExpressionSearchPage(
                                   gagalIdentifikasi: false,
                                 )),
                       );
@@ -224,7 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         _lastDragPositionY < _iconStartPositionY - 10) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MusicPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const MusicPage()),
                       );
                     }
                   }
@@ -259,11 +268,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _getTabContent(int index) {
     switch (index) {
       case 0:
-        return HomeScreen(); // Widget untuk konten halaman Home
+        return const HomeScreen(); // Widget untuk konten halaman Home
       case 1:
-        return ProfileScreen(); // Widget untuk konten halaman Profile
+        return const ProfileScreen(); // Widget untuk konten halaman Profile
       default:
-        return HomeScreen();
+        return const HomeScreen();
     }
   }
 

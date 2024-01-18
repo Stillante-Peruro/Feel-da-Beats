@@ -94,21 +94,21 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               GestureDetector(
-                child: Icon(Icons.arrow_back),
+                child: const Icon(Icons.arrow_back),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color.fromRGBO(62, 182, 236, 1),
                   border: OutlineInputBorder(
@@ -120,8 +120,8 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 controller: _searchController,
               ),
-              SizedBox(height: 20),
-              Text('For you',
+              const SizedBox(height: 20),
+              const Text('For you',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 20,
@@ -134,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
                     ],
                     fontWeight: FontWeight.bold,
                   )),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -143,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (context, snapshots) {
                     return (snapshots.connectionState ==
                             ConnectionState.waiting)
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : ListView.builder(
@@ -153,7 +153,7 @@ class _SearchPageState extends State<SearchPage> {
                                 title: Text(_resultList[index]['title'],
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 16,
                                         color: Color.fromRGBO(99, 124, 178, 1),
@@ -168,13 +168,13 @@ class _SearchPageState extends State<SearchPage> {
                                 subtitle: Text(_resultList[index]['artist'],
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontFamily: 'Poppins',
                                     )),
                                 leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
-                                    child: Container(
+                                    child: SizedBox(
                                       width: 57,
                                       height: 57,
                                       child: Image.network(
@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
                                                       ["audioPath"],
                                                 )));
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.play_circle_fill_rounded,
                                     color: Color.fromRGBO(62, 182, 236, 1),
                                   ),

@@ -48,7 +48,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
     if (widget.gagalIdentifikasi == false) {
       _startTimerToCancel();
     }
-    _faceDetectionTimer = Timer(Duration(seconds: 0), () {});
+    _faceDetectionTimer = Timer(const Duration(seconds: 0), () {});
   }
 
   @override
@@ -227,7 +227,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
   void _startTimerToCancel() {
     if (!_timerAlreadyStarted) {
       _timerAlreadyStarted = true;
-      _redirectTimer = Timer(Duration(seconds: 10), () {
+      _redirectTimer = Timer(const Duration(seconds: 10), () {
         if (emosi == 'Tidak Ada Wajah Terdeteksi') {
           setState(() {
             _isPageSwitched = true;
@@ -283,7 +283,7 @@ class _ExpressionSearchPageState extends State<ExpressionSearchPage>
     if (!_timeRedirect) {
       _timeRedirect = true;
       bool imageSaved = false;
-      _faceDetectionTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _faceDetectionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (timer.tick >= 3 && !imageSaved) {
           imageSaved = true;
           if (emosi == 'Wajah Terdeteksi') {

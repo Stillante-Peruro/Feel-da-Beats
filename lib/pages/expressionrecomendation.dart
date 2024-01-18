@@ -24,12 +24,12 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
 
   @override
   void initState() {
+    super.initState();
+    _loadModel();
     getAllSongs();
     getAngrySongs();
     getHappySongs();
     getSadSongs();
-    _loadModel();
-    super.initState();
   }
 
   @override
@@ -208,10 +208,10 @@ class _RecommendedSongsPageState extends State<RecommendedSongsPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(recommendedSongs[index]['title'],
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
                   subtitle: Text(recommendedSongs[index]['artist'],
-                      style: TextStyle(fontSize: 16)),
+                      style: const TextStyle(fontSize: 16)),
                   leading:
                       Image.network(recommendedSongs[index]['albumImgUrl']),
                   // Aksi ketika item di klik (misalnya putar lagu, buka detail lagu, dll.)

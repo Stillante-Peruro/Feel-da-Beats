@@ -20,7 +20,7 @@ class _adminOnlyPageState extends State<adminOnlyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Admin Only')),
+        appBar: AppBar(title: const Text('Admin Only')),
         body: SingleChildScrollView(
           child: Center(
             child: Padding(
@@ -29,54 +29,54 @@ class _adminOnlyPageState extends State<adminOnlyPage> {
                 children: [
                   TextField(
                     controller: titleController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter tittle song",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: artistController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter the artist",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: audioController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter audio url",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: albumController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter url album photo",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: emotionController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: "Enter mood (Angry/Happy/Sad)",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       Song song = Song(
@@ -101,16 +101,16 @@ class _adminOnlyPageState extends State<adminOnlyPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0),
                       ),
-                      fixedSize: Size(200, 50),
+                      fixedSize: const Size(200, 50),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MyHomePage()));
+                              builder: (context) => const MyHomePage()));
                     },
                     child: Text("Go to homepage",
                         style: TextStyle(color: Colors.white)),
@@ -119,7 +119,7 @@ class _adminOnlyPageState extends State<adminOnlyPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0),
                       ),
-                      fixedSize: Size(200, 50),
+                      fixedSize: const Size(200, 50),
                     ),
                   ),
                 ],

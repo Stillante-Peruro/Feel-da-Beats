@@ -140,7 +140,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
         _acrCloud.cancel();
         _acrCloud.dispose();
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Tidak dapat mengenali lagu'),
       ));
       return;
@@ -258,7 +258,7 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child: Container(
               height: 480,
@@ -271,15 +271,16 @@ class _MusicPageState extends State<MusicPage> with TickerProviderStateMixin {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Container(
+                    SizedBox(
                       width: 300,
                       height: 120,
                       child: Text(
                         _isRecording ? _loadingText : _text,
-                        style: TextStyle(fontSize: 25, fontFamily: 'Roboto'),
+                        style:
+                            const TextStyle(fontSize: 25, fontFamily: 'Roboto'),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Center(
                       child: SizedBox(
                         width: 350,

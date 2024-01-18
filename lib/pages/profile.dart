@@ -25,14 +25,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             userManagement().signOut();
             logout();
           },
-          child: Text('Log out', style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.indigo[800],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),
-            fixedSize: Size(200, 50),
+            fixedSize: const Size(200, 50),
           ),
+          child: const Text('Log out', style: TextStyle(color: Colors.white)),
         ),
       ),
     );

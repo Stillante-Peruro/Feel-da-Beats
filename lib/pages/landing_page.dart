@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
         //   title: Text('Feel da beats'),
         // ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/vector138.png'),
                 fit: BoxFit.fitWidth,
@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
           ),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage('assets/vector139.png'),
                     fit: BoxFit.fitWidth,
@@ -46,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
                     )),
             child: Column(
               children: [
-                SizedBox(height: 75),
-                SizedBox(
+                const SizedBox(height: 75),
+                const SizedBox(
                   height: 200,
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     child: Text('Login',
                         textAlign: TextAlign.start,
                         style: TextStyle(
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                           onChanged: (value) {
                             email = value;
                           },
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 3,
@@ -81,13 +81,13 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         TextField(
                           obscureText: true,
                           onChanged: (value) {
                             password = value;
                           },
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 3,
@@ -98,10 +98,10 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text(_errorMessage,
-                            style: TextStyle(color: Colors.red)),
-                        SizedBox(height: 10),
+                            style: const TextStyle(color: Colors.red)),
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () async {
                             setState(() {
@@ -128,20 +128,21 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             }
                           },
-                          child: Text('Login',
+                          child: const Text('Login',
                               style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Color.fromRGBO(66, 87, 154, 1),
+                              backgroundColor:
+                                  const Color.fromRGBO(66, 87, 154, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(0),
                               ),
-                              fixedSize: Size(200, 50),
-                              side: BorderSide(
+                              fixedSize: const Size(200, 50),
+                              side: const BorderSide(
                                   width: 3,
                                   color: Color.fromRGBO(103, 80, 163, 1))),
                         ),
-                        SizedBox(height: 180),
-                        Text("Don't have an account?",
+                        const SizedBox(height: 180),
+                        const Text("Don't have an account?",
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold)),
                         GestureDetector(
@@ -149,10 +150,11 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SignUpPage()));
+                                      builder: (context) =>
+                                          const SignUpPage()));
                               print('signup');
                             },
-                            child: Text(
+                            child: const Text(
                               'Sign Up',
                               style: TextStyle(
                                   color: Color.fromRGBO(66, 87, 154, 1),

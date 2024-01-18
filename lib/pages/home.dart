@@ -1,6 +1,7 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:feel_da_beats_app/pages/expressionrecomendation.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_da_beats_app/pages/expression.dart';
 import 'package:feel_da_beats_app/pages/hum_to_search.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,6 +16,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List _allResults = [];
+  // List _resultList = [];
+  final TextEditingController _searchController = TextEditingController();
+  bool keyboardOpen = false;
+
+  getSongsScream() async {
+    var data = await FirebaseFirestore.instance
+        .collection('songs')
+        .orderBy('title')
+        .get();
+
+    setState(() {
+      _allResults = data.docs;
+    });
+    // searchResultList();
+  }
+
   // addData() async {
   //   for (var element in songData) {
   //     FirebaseFirestore.instance.collection('songs').add(element);
@@ -49,10 +67,40 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
-    Firebase.initializeApp().whenComplete(() {
-      print("completed");
-    });
+    Firebase.initializeApp().whenComplete(() {});
+
+    getSongsScream();
+
+    _searchController.addListener(_onSearchChanged);
     super.initState();
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   getSongsScream();
+  //   super.didChangeDependencies();
+  // }
+
+  _onSearchChanged() {
+    searchResultList();
+  }
+
+  searchResultList() {
+    var showResults = [];
+    if (_searchController.text != "") {
+      for (var songsSnapshot in _allResults) {
+        var title = songsSnapshot['title'].toString().toLowerCase();
+        if (title.contains(_searchController.text.toLowerCase())) {
+          showResults.add(songsSnapshot);
+        }
+      }
+    } else {
+      showResults = List.from(_allResults);
+    }
+
+    // setState(() {
+    //   _resultList = showResults;
+    // });
   }
 
   @override
@@ -74,27 +122,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
                           color: const Color(0xFF3EB6EC)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 50),
-                            child: Text(
-                              "Search",
-                              style: TextStyle(
-                                  color: Color(0xFF42579A),
-                                  fontFamily: 'Roboto',
-                                  fontSize: 16),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 26, right: 12),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Color.fromRGBO(62, 182, 236, 1),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                              borderSide: BorderSide.none,
                             ),
+                            hintText: 'Search',
+                            suffixIcon: Icon(Icons.search),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: IconButton(
-                                icon: const Icon(Icons.search),
-                                onPressed: () {}),
-                          )
-                        ],
+                          controller: _searchController,
+                        ),
                       ),
                     ),
                   ),
@@ -215,12 +258,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 193,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                            color: Color(0xFFC7EBFB),
+                            color: const Color(0xFFC7EBFB),
                             borderRadius: BorderRadius.circular(16)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            SizedBox(
                               height: 159,
                               width: MediaQuery.of(context).size.width,
                               child: Stack(
@@ -237,7 +280,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         .toList(),
                                     carouselController: carouselController,
                                     options: CarouselOptions(
-                                      scrollPhysics: BouncingScrollPhysics(),
+                                      scrollPhysics:
+                                          const BouncingScrollPhysics(),
                                       autoPlay: true,
                                       aspectRatio: 2.4,
                                       viewportFraction: 1,
@@ -342,8 +386,62 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 140,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 14, bottom: 10, left: 10, right: 10),
+                    child: Expanded(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(_allResults.length, (index) {
+                            return SizedBox(
+                              width: 100,
+                              child: Column(
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: SizedBox(
+                                        width: 80,
+                                        height: 80,
+                                        child: Image.network(
+                                          _allResults[index]["albumImgUrl"],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )),
+                                  Text(
+                                    _allResults[index]['title'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Color(0XFF637CB2),
+                                      fontFamily: 'Roboto',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 4,
+                                          offset: Offset(0, 3),
+                                          color: Color.fromRGBO(0, 0, 0, 0.4),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    _allResults[index]['artist'],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                        color: Color(0xFF847B7B),
+                                        fontFamily: 'Roboto',
+                                        fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            );
+                          })),
+                    ),
+                  ),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 16),

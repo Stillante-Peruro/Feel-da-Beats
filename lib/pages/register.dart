@@ -28,7 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
       //   title: Text('Feel da beats'),
       // ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/vector138.png'),
               fit: BoxFit.fitWidth,
@@ -37,7 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
         ),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/vector139.png'),
                 fit: BoxFit.fitWidth,
@@ -47,8 +47,8 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           child: Column(
             children: [
-              SizedBox(height: 75),
-              Padding(
+              const SizedBox(height: 75),
+              const Padding(
                 padding: EdgeInsets.all(16),
                 child: SizedBox(
                   height: 130,
@@ -73,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onChanged: (value) {
                           username = value;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                   width: 3,
@@ -84,13 +84,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextField(
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (value) {
                           email = value;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                   width: 3,
@@ -101,13 +101,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       TextField(
                         obscureText: true,
                         onChanged: (value) {
                           password = value;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                   width: 3,
@@ -118,9 +118,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      Text(_errorMessage, style: TextStyle(color: Colors.red)),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 20),
+                      Text(_errorMessage,
+                          style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () async {
                           setState(() {
@@ -146,7 +147,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MyHomePage()));
+                                      builder: (context) =>
+                                          const MyHomePage()));
                             } catch (e) {
                               if (e is FirebaseAuthException) {
                                 setState(() {
@@ -161,20 +163,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                 username);
                           }
                         },
-                        child: Text('Sign Up',
+                        child: const Text('Sign Up',
                             style: TextStyle(color: Colors.white)),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(66, 87, 154, 1),
+                            backgroundColor:
+                                const Color.fromRGBO(66, 87, 154, 1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(0),
                             ),
-                            fixedSize: Size(200, 50),
-                            side: BorderSide(
+                            fixedSize: const Size(200, 50),
+                            side: const BorderSide(
                                 width: 3,
                                 color: Color.fromRGBO(103, 80, 163, 1))),
                       ),
-                      SizedBox(height: 120),
-                      Text("Already have an account?",
+                      const SizedBox(height: 120),
+                      const Text("Already have an account?",
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold)),
                       GestureDetector(
@@ -182,10 +185,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => const LoginPage()));
                             print('Login');
                           },
-                          child: Text(
+                          child: const Text(
                             'Login',
                             style: TextStyle(
                                 color: Color.fromRGBO(66, 87, 154, 1),

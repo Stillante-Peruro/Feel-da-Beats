@@ -63,10 +63,10 @@ class _MyAppState extends State<MyApp> {
           ? LoginPage.id
           : MyHomePage.id,
       routes: {
-        LoginPage.id: (context) => LoginPage(),
-        MyHomePage.id: (context) => MyHomePage(),
+        LoginPage.id: (context) => const LoginPage(),
+        MyHomePage.id: (context) => const MyHomePage(),
       },
-      home: MyHomePage(),
+      home: const MyHomePage(),
 
       // userManagement().handleAuth()
     );
