@@ -9,4 +9,6 @@ Nama Anggota:
 3. Muhammad Arief Pratama (Hacker)
 4. RA. Nur Afifah Widyadhana (Hacker)
 
-Deskripsi Produk: Sebuah Aplikasi musik yang memiliki fitur unik yang dapat memudahkan kita untuk mencari lagu seperti scan by expression, hum to search, dan fitur unik lainnya.
+<h2>Introduction</h2>
+Welcome to Feel da Beats app, an music application that has unique features that can make it easier for us to search for songs such as scan by expression, hum to search, and other unique features.
+
