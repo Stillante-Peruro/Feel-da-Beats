@@ -36,32 +36,38 @@ UI Scheme 1            | UI Scheme 2
 <div style="display:flex;">
    <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/login.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Register Page
 <div style="display:flex;">
    <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/register.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Homepage
 <div style="display:flex;">
    <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/home.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Search Page
 <div style="display:flex;">
    <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/search.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Emotion Search Page
 <div style="display:flex;">
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionsearch.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionseacrh.jpg" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionsearch2.png" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/angrymood.jpg" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/sadmood.jpg" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/happymood.jpg" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/neutralmood.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/neutral mood.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Hum To Search Page
 <div style="display:flex;">
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum.jpg" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum2.jpg" alt="screen_5" width="200"/>
 </div>
+
 ### Music Player
 <div style="display:flex;">
    <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/musicplayer.jpg" alt="screen_5" width="200"/>
