@@ -34,37 +34,37 @@ UI Scheme 1            | UI Scheme 2
 ## Application Screenshots
 ### Login Page
 <div style="display:flex;">
-   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/login.png" alt="screen_5" width="200"/>
+   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/login.jpg" alt="screen_5" width="200"/>
 </div>
 ### Register Page
 <div style="display:flex;">
-   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/register.png" alt="screen_5" width="200"/>
+   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/register.jpg" alt="screen_5" width="200"/>
 </div>
 ### Homepage
 <div style="display:flex;">
-   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/home.png" alt="screen_5" width="200"/>
+   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/home.jpg" alt="screen_5" width="200"/>
 </div>
 ### Search Page
 <div style="display:flex;">
-   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/search.png" alt="screen_5" width="200"/>
+   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/search.jpg" alt="screen_5" width="200"/>
 </div>
 ### Emotion Search Page
 <div style="display:flex;">
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionsearch.png" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionsearch.jpg" alt="screen_5" width="200"/>
   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/emotionsearch2.png" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/angrymood.png" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/sadmood.png" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/happymood.png" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/neutralmood.png" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/angrymood.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/sadmood.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/happymood.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/neutralmood.jpg" alt="screen_5" width="200"/>
 </div>
 ### Hum To Search Page
 <div style="display:flex;">
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum.png" alt="screen_5" width="200"/>
-  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum2.png" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum.jpg" alt="screen_5" width="200"/>
+  <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/hum2.jpg" alt="screen_5" width="200"/>
 </div>
 ### Music Player
 <div style="display:flex;">
-   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/musicplayer.png" alt="screen_5" width="200"/>
+   <img src="https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/musicplayer.jpg" alt="screen_5" width="200"/>
 </div>
 
 - The rest of pages can be seen by installing our Feel da Beats app.
@@ -93,7 +93,7 @@ Facing problems? Kindly open an issue.
 We used Use Case Diagram and Sequence Diagram to design & plan our NeuroParenting app precisely. 
 
 ### Use Case Diagram
-![Use Case Diagram](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/UseCaseDiagram.pdf) (Download in PDF)
+[Use Case Diagram](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/UseCaseDiagram.pdf) (Download in PDF)
 
 ### Sequence Diagram of Each Use Case
 [System Analysis & Design of NeuroParenting](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/SequenceDiagram.pdf) (Download in PDF)
