@@ -102,4 +102,4 @@ We used Use Case Diagram and Sequence Diagram to design & plan our Feel da Beats
 [Use Case Diagram](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/UseCaseDiagram.pdf) (Download in PDF)
 
 ### Sequence Diagram of Each Use Case
-[System Analysis & Design of NeuroParenting](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/SequenceDiagram.pdf) (Download in PDF)
+[System Analysis & Design of Feel da Beats](https://github.com/Stillante-Peruro/Feel-da-Beats/blob/main/screenshot/SequenceDiagram.pdf) (Download in PDF)
